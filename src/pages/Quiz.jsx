@@ -1,14 +1,20 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { quizData } from '../data/quizData';
+import { db } from '../config/firebase';
+import { collection, addDoc } from 'firebase/firestore';
 
 export default function Quiz() {
-  const [screen, setScreen] = useState('intro'); // intro, quiz, results
+  const navigate = useNavigate();
+  const [screen, setScreen] = useState('username'); // username, intro, quiz, loading
+  const [username, setUsername] = useState('');
+  const [usernameError, setUsernameError] = useState('');
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState({});
   const [timeLeft, setTimeLeft] = useState(quizData.duration * 60); // in seconds
   const [startTime, setStartTime] = useState(null);
   const [showConfirmSubmit, setShowConfirmSubmit] = useState(false);
-  const [finalTimeTaken, setFinalTimeTaken] = useState(0);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Timer effect
   useEffect(() => {
@@ -27,6 +33,29 @@ export default function Quiz() {
     return () => clearInterval(timer);
   }, [screen, timeLeft]);
 
+  const handleUsernameSubmit = (e) => {
+    e.preventDefault();
+    const trimmedUsername = username.trim();
+    
+    if (!trimmedUsername) {
+      setUsernameError('Vui lòng nhập tên');
+      return;
+    }
+    
+    if (trimmedUsername.length < 2) {
+      setUsernameError('Tên phải có ít nhất 2 ký tự');
+      return;
+    }
+
+    if (trimmedUsername.length > 50) {
+      setUsernameError('Tên không được quá 50 ký tự');
+      return;
+    }
+    
+    setUsernameError('');
+    setScreen('intro');
+  };
+
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -36,8 +65,8 @@ export default function Quiz() {
   const handleStartQuiz = () => {
     setScreen('quiz');
     setStartTime(Date.now());
-    // Load previous answers from localStorage if exists
-    const savedAnswers = localStorage.getItem('quizAnswers');
+    // Load previous answers from sessionStorage if exists
+    const savedAnswers = sessionStorage.getItem('quizAnswers');
     if (savedAnswers) {
       setAnswers(JSON.parse(savedAnswers));
     }
@@ -46,7 +75,7 @@ export default function Quiz() {
   const handleSelectAnswer = (optionIndex) => {
     const newAnswers = { ...answers, [currentQuestion]: optionIndex };
     setAnswers(newAnswers);
-    localStorage.setItem('quizAnswers', JSON.stringify(newAnswers));
+    sessionStorage.setItem('quizAnswers', JSON.stringify(newAnswers));
   };
 
   const handleNextQuestion = () => {
@@ -65,50 +94,114 @@ export default function Quiz() {
     setShowConfirmSubmit(true);
   };
 
-  const confirmSubmit = () => {
+  const confirmSubmit = async () => {
     const correctCount = quizData.questions.reduce((count, question, index) => {
       return answers[index] === question.correct ? count + 1 : count;
     }, 0);
 
     const timeTaken = Math.floor((Date.now() - startTime) / 1000);
-    setFinalTimeTaken(timeTaken);
     
     const result = {
+      username: username.trim(),
       correct: correctCount,
       total: quizData.questions.length,
+      score: Math.round((correctCount / quizData.questions.length) * 100),
       timeTaken: timeTaken,
       answers: answers,
       completedAt: new Date().toISOString()
     };
 
-    // Save result to localStorage
-    const results = JSON.parse(localStorage.getItem('quizResults')) || [];
-    results.push(result);
-    localStorage.setItem('quizResults', JSON.stringify(results));
+    // Save to Firebase
+    try {
+      setIsSubmitting(true);
+      console.log('📤 Đang lưu kết quả...', result);
+      
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Hết thời gian chờ (timeout)')), 10000)
+      );
+      
+      const savePromise = addDoc(collection(db, 'quizResults'), result);
+      
+      await Promise.race([savePromise, timeoutPromise]);
+      
+      console.log('✅ Lưu thành công!');
+    } catch (error) {
+      console.error('❌ Lỗi khi lưu kết quả:', error);
+      // Vẫn cho phép tiếp tục ngay cả khi lỗi
+      if (error.message !== 'Hết thời gian chờ (timeout)') {
+        alert('⚠️ Không thể kết nối Firebase, nhưng kết quả sẽ hiển thị. Vui lòng thử xem bảng xếp hạng sau.');
+      } else {
+        alert('⚠️ Kết nối chậm. Vui lòng kiểm tra mạng hoặc cấu hình Firebase.');
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
 
     // Clear current answers
-    localStorage.removeItem('quizAnswers');
+    sessionStorage.removeItem('quizAnswers');
 
-    setScreen('results');
-    setShowConfirmSubmit(false);
+    // Navigate to success page with state
+    navigate('/success', { state: { result } });
   };
 
-  const handleRetry = () => {
-    setCurrentQuestion(0);
-    setAnswers({});
-    setTimeLeft(quizData.duration * 60);
-    setStartTime(Date.now());
-    setScreen('quiz');
-    localStorage.removeItem('quizAnswers');
-  };
+  // Username Screen
+  if (screen === 'username') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-600 via-indigo-600 to-purple-800 flex items-center justify-center p-4">
+        <div className="w-full max-w-2xl">
+          <div className="bg-white rounded-3xl shadow-2xl p-12 md:p-16 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="text-center mb-8">
+              <h1 className="text-4xl md:text-5xl font-bold text-indigo-600 mb-3">
+                👋 Xin chào!
+              </h1>
+              <p className="text-gray-600 text-lg">
+                Vui lòng nhập tên của bạn để bắt đầu
+              </p>
+            </div>
 
-  const handleBackHome = () => {
-    setScreen('intro');
-    setCurrentQuestion(0);
-    setAnswers({});
-    setTimeLeft(quizData.duration * 60);
-    setShowConfirmSubmit(false);
-  };
+            <form onSubmit={handleUsernameSubmit} className="space-y-6">
+              <div>
+                <input
+                  type="text"
+                  value={username}
+                  onChange={(e) => {
+                    setUsername(e.target.value);
+                    setUsernameError('');
+                  }}
+                  placeholder="Nhập tên của bạn..."
+                  className={`w-full px-6 py-4 text-lg border-2 rounded-xl focus:outline-none transition duration-300 ${
+                    usernameError
+                      ? 'border-red-500 focus:border-red-600 bg-red-50'
+                      : 'border-indigo-300 focus:border-indigo-600 focus:bg-indigo-50'
+                  }`}
+                  autoFocus
+                  onKeyPress={(e) => e.key === 'Enter' && handleUsernameSubmit(e)}
+                />
+                {usernameError && (
+                  <p className="text-red-600 text-sm font-semibold mt-2 flex items-center gap-2">
+                    ⚠️ {usernameError}
+                  </p>
+                )}
+              </div>
+
+              <button
+                type="submit"
+                className="w-full bg-gradient-to-r from-indigo-600 to-purple-700 hover:from-indigo-700 hover:to-purple-800 text-white font-bold py-4 px-6 rounded-lg text-lg uppercase tracking-wider transition duration-300 transform hover:-translate-y-1 hover:shadow-lg"
+              >
+                Tiếp tục →
+              </button>
+            </form>
+
+            <div className="mt-8 p-6 bg-indigo-50 rounded-xl border border-indigo-200">
+              <p className="text-sm text-gray-600 text-center">
+                ℹ️ Tên của bạn sẽ được hiển thị trên bảng xếp hạng
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   // Intro Screen
   if (screen === 'intro') {
@@ -161,12 +254,26 @@ export default function Quiz() {
               </ul>
             </div>
 
-            <button
-              onClick={handleStartQuiz}
-              className="w-full bg-gradient-to-r from-indigo-600 to-purple-700 hover:from-indigo-700 hover:to-purple-800 text-white font-bold py-4 px-6 rounded-lg text-lg uppercase tracking-wider transition duration-300 transform hover:-translate-y-1 hover:shadow-lg"
-            >
-              Bắt đầu làm bài
-            </button>
+            <div className="flex gap-4 flex-col md:flex-row mb-6">
+              <button
+                onClick={handleStartQuiz}
+                className="flex-1 bg-gradient-to-r from-indigo-600 to-purple-700 hover:from-indigo-700 hover:to-purple-800 text-white font-bold py-4 px-6 rounded-lg text-lg uppercase tracking-wider transition duration-300 transform hover:-translate-y-1 hover:shadow-lg"
+              >
+                Bắt đầu làm bài
+              </button>
+              <button
+                onClick={() => setScreen('username')}
+                className="flex-1 bg-white hover:bg-gray-100 text-indigo-600 font-bold py-4 px-6 rounded-lg border-2 border-indigo-600 text-lg uppercase transition duration-300"
+              >
+                Đổi tên
+              </button>
+            </div>
+
+            <div className="p-4 bg-indigo-50 rounded-lg text-center">
+              <p className="text-indigo-600 font-semibold">
+                Đang chơi với tên: <span className="text-indigo-700 font-bold">{username}</span>
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -289,166 +396,35 @@ export default function Quiz() {
             <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full animate-in fade-in zoom-in-95 duration-300">
               <h3 className="text-2xl font-bold text-gray-800 mb-4">Xác nhận nộp bài</h3>
               <p className="text-gray-600 mb-3 text-lg">
-                Bạn đã trả lời <span className="font-bold text-indigo-600">{answeredCount}</span> câu trong tổng số <span className="font-bold text-indigo-600">{quizData.questions.length}</span> câu.
+                Bạn đã trả lời <span className="font-bold text-indigo-600">{Object.keys(answers).length}</span> câu trong tổng số <span className="font-bold text-indigo-600">{quizData.questions.length}</span> câu.
               </p>
               <p className="text-gray-600 mb-6 text-lg">Bạn chắc chắn muốn nộp bài không?</p>
               <div className="flex gap-4">
                 <button
                   onClick={() => setShowConfirmSubmit(false)}
-                  className="flex-1 px-4 py-3 bg-indigo-100 hover:bg-indigo-200 text-indigo-600 font-bold rounded-lg transition duration-300 border-2 border-indigo-600"
+                  disabled={isSubmitting}
+                  className="flex-1 px-4 py-3 bg-indigo-100 hover:bg-indigo-200 disabled:opacity-50 text-indigo-600 font-bold rounded-lg transition duration-300 border-2 border-indigo-600 disabled:cursor-not-allowed"
                 >
                   Tiếp tục làm bài
                 </button>
                 <button
                   onClick={confirmSubmit}
-                  className="flex-1 px-4 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold rounded-lg transition duration-300"
+                  disabled={isSubmitting}
+                  className="flex-1 px-4 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold rounded-lg transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
-                  Xác nhận nộp
+                  {isSubmitting ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      <span>⏳ Đang xử lý...</span>
+                    </>
+                  ) : (
+                    'Xác nhận nộp'
+                  )}
                 </button>
               </div>
             </div>
           </div>
         )}
-      </div>
-    );
-  }
-
-  // Results Screen
-  if (screen === 'results') {
-    const correctCount = quizData.questions.reduce((count, question, index) => {
-      return answers[index] === question.correct ? count + 1 : count;
-    }, 0);
-
-    const totalQuestions = quizData.questions.length;
-    const percentage = Math.round((correctCount / totalQuestions) * 100);
-    const minutesTaken = Math.floor(finalTimeTaken / 60);
-    const secondsTaken = finalTimeTaken % 60;
-
-    let resultMessage = '';
-    let resultIcon = '';
-    let resultColor = '';
-    let badgeColor = '';
-
-    if (percentage >= 80) {
-      resultMessage = 'Xuất sắc! 🎉';
-      resultIcon = '⭐';
-      resultColor = 'from-blue-500 to-blue-600';
-      badgeColor = 'from-blue-100 to-blue-50';
-    } else if (percentage >= 60) {
-      resultMessage = 'Tốt! 👍';
-      resultIcon = '👍';
-      resultColor = 'from-green-500 to-green-600';
-      badgeColor = 'from-green-100 to-green-50';
-    } else if (percentage >= 40) {
-      resultMessage = 'Bình thường!';
-      resultIcon = '😐';
-      resultColor = 'from-yellow-500 to-yellow-600';
-      badgeColor = 'from-yellow-100 to-yellow-50';
-    } else {
-      resultMessage = 'Cần cố gắng hơn! 💪';
-      resultIcon = '📚';
-      resultColor = 'from-red-500 to-red-600';
-      badgeColor = 'from-red-100 to-red-50';
-    }
-
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-600 via-indigo-600 to-purple-800 p-4 md:p-8">
-        <div className="w-full max-w-4xl mx-auto">
-          <div className={`bg-gradient-to-br ${badgeColor} rounded-3xl shadow-2xl p-10 md:p-16 animate-in fade-in slide-in-from-bottom-4 duration-500`}>
-            <div className="text-center mb-8">
-              <div className="text-8xl md:text-9xl mb-4">{resultIcon}</div>
-              <h2 className={`text-4xl md:text-5xl font-bold bg-gradient-to-r ${resultColor} bg-clip-text text-transparent mb-2`}>
-                {resultMessage}
-              </h2>
-            </div>
-
-            {/* Score Circle */}
-            <div className="flex justify-center mb-12">
-              <div className="relative w-48 h-48 md:w-56 md:h-56 rounded-full border-8 border-gray-300 flex flex-col items-center justify-center bg-white shadow-lg">
-                <div className={`absolute inset-0 rounded-full bg-gradient-to-br ${resultColor} opacity-10`}></div>
-                <div className="text-6xl md:text-7xl font-black bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                  {percentage}%
-                </div>
-                <div className="text-sm uppercase text-gray-500 font-bold tracking-wider mt-2">Điểm số</div>
-              </div>
-            </div>
-
-            {/* Details Grid */}
-            <div className="grid grid-cols-3 gap-4 md:gap-6 mb-10 p-8 bg-white rounded-2xl shadow-lg">
-              <div className="text-center">
-                <p className="text-xs md:text-sm uppercase text-gray-500 font-bold tracking-wider mb-2">Đúng</p>
-                <p className="text-3xl md:text-4xl font-bold text-green-600">{correctCount}</p>
-                <p className="text-xs text-gray-400 mt-1">/{totalQuestions}</p>
-              </div>
-              <div className="text-center border-l border-r border-gray-200">
-                <p className="text-xs md:text-sm uppercase text-gray-500 font-bold tracking-wider mb-2">Sai</p>
-                <p className="text-3xl md:text-4xl font-bold text-red-600">{totalQuestions - correctCount}</p>
-                <p className="text-xs text-gray-400 mt-1">/{totalQuestions}</p>
-              </div>
-              <div className="text-center">
-                <p className="text-xs md:text-sm uppercase text-gray-500 font-bold tracking-wider mb-2">Thời gian</p>
-                <p className="text-3xl md:text-4xl font-bold text-indigo-600">
-                  {minutesTaken}:{secondsTaken < 10 ? '0' : ''}{secondsTaken}
-                </p>
-              </div>
-            </div>
-
-            {/* Action Buttons */}
-            <div className="flex flex-col md:flex-row gap-4 mb-10 justify-center">
-              <button
-                onClick={handleRetry}
-                className="px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold rounded-lg transition duration-300 transform hover:-translate-y-1 hover:shadow-lg text-lg"
-              >
-                🔄 Làm lại
-              </button>
-              <button
-                onClick={handleBackHome}
-                className="px-8 py-4 bg-white hover:bg-gray-100 text-indigo-600 font-bold rounded-lg border-2 border-indigo-600 transition duration-300 text-lg"
-              >
-                🏠 Về trang chủ
-              </button>
-            </div>
-
-            {/* Review Section */}
-            <div className="bg-white rounded-2xl shadow-lg p-8">
-              <h3 className="text-2xl font-bold text-gray-800 mb-6">📋 Xem lại kết quả</h3>
-              <div className="space-y-4 max-h-96 overflow-y-auto">
-                {quizData.questions.map((question, index) => {
-                  const isCorrect = answers[index] === question.correct;
-                  return (
-                    <div
-                      key={index}
-                      className={`p-5 rounded-xl border-l-4 ${
-                        isCorrect
-                          ? 'bg-green-50 border-green-500'
-                          : 'bg-red-50 border-red-500'
-                      }`}
-                    >
-                      <div className={`font-bold mb-2 text-lg ${isCorrect ? 'text-green-600' : 'text-red-600'}`}>
-                        {isCorrect ? '✓' : '✗'} Câu {index + 1}
-                      </div>
-                      <div className="text-gray-800 mb-3 font-medium">{question.question}</div>
-                      <div className="text-sm space-y-2">
-                        <div className="text-gray-700">
-                          <span className="font-semibold">Bạn chọn:</span>{' '}
-                          <span className={isCorrect ? 'text-green-700 font-bold' : 'text-red-700 font-bold'}>
-                            {question.options[answers[index]]}
-                          </span>
-                        </div>
-                        {!isCorrect && (
-                          <div className="text-green-700">
-                            <span className="font-semibold">Đáp án đúng:</span>{' '}
-                            <span className="font-bold">{question.options[question.correct]}</span>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     );
   }
