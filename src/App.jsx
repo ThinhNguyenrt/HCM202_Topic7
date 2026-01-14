@@ -4,6 +4,7 @@ import Footer from './components/footer/Footer.jsx'
 import Home from './pages/Home.jsx'
 import Ideal from './pages/Ideal.jsx'
 import Values from './pages/Values.jsx'
+import Quiz from './pages/Quiz.jsx'
 function App() {
   return (
     <Router>
@@ -14,7 +15,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/tu-tuong-hcm" element={<Ideal />} />
             <Route path="/gia-tri-vai-tro" element={<Values />} />
-            {/* Thêm các routes khác ở đây */}
+            <Route path="/quiz" element={<Quiz />} />
           </Routes>
         </main>
         <Footer />
