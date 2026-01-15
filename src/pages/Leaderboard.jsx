@@ -14,10 +14,10 @@ export default function Leaderboard() {
   const fetchLeaderboard = async () => {
     try {
       setLoading(true);
+      // Chỉ sử dụng một orderBy để tránh cần composite index
       const q = query(
         collection(db, 'quizResults'),
         orderBy('score', 'desc'),
-        orderBy('timeTaken', 'asc'),
         limit(100)
       );
       const querySnapshot = await getDocs(q);
@@ -25,6 +25,15 @@ export default function Leaderboard() {
       querySnapshot.forEach((doc) => {
         results.push({ id: doc.id, ...doc.data() });
       });
+      
+      // Sắp xếp lại bằng JavaScript: điểm cao trước, nếu điểm bằng thì thời gian nhanh hơn
+      results.sort((a, b) => {
+        if (a.score !== b.score) {
+          return b.score - a.score; // Điểm cao hơn lên trước
+        }
+        return a.timeTaken - b.timeTaken; // Nếu điểm bằng, thời gian nhanh hơn lên trước
+      });
+      
       setLeaderboard(results);
     } catch (error) {
       console.error('Lỗi khi lấy leaderboard:', error);
