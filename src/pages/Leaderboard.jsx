@@ -6,6 +6,48 @@ import { Link } from 'react-router-dom';
 export default function Leaderboard() {
   const [leaderboard, setLeaderboard] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [showAdminLogin, setShowAdminLogin] = useState(false);
+  const [adminPassword, setAdminPassword] = useState('');
+  const [timeFilter, setTimeFilter] = useState('all'); // 'all', 'today', 'week', 'month'
+  const [filteredLeaderboard, setFilteredLeaderboard] = useState([]);
+
+  // Kiểm tra admin status từ localStorage khi component mount
+  useEffect(() => {
+    const adminStatus = localStorage.getItem('isAdmin') === 'true';
+    setIsAdmin(adminStatus);
+  }, []);
+
+  // Lọc dữ liệu khi timeFilter thay đổi hoặc leaderboard thay đổi
+  useEffect(() => {
+    if (leaderboard.length > 0) {
+      const now = new Date();
+      const filtered = leaderboard.filter((item) => {
+        const itemDate = new Date(item.completedAt);
+        
+        switch (timeFilter) {
+          case 'today':
+            return (
+              itemDate.getDate() === now.getDate() &&
+              itemDate.getMonth() === now.getMonth() &&
+              itemDate.getFullYear() === now.getFullYear()
+            );
+          case 'week': {
+            const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+            return itemDate >= weekAgo;
+          }
+          case 'month': {
+            const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+            return itemDate >= monthAgo;
+          }
+          case 'all':
+          default:
+            return true;
+        }
+      });
+      setFilteredLeaderboard(filtered);
+    }
+  }, [timeFilter, leaderboard]);
 
   useEffect(() => {
     fetchLeaderboard();
@@ -49,20 +91,132 @@ export default function Leaderboard() {
     return position;
   };
 
+  const handleAdminLogin = (e) => {
+    e.preventDefault();
+    const ADMIN_PASSWORD = 'admin123'; // Có thể thay đổi hoặc lưu trong env
+    if (adminPassword === ADMIN_PASSWORD) {
+      localStorage.setItem('isAdmin', 'true');
+      setIsAdmin(true);
+      setShowAdminLogin(false);
+      setAdminPassword('');
+    } else {
+      alert('Mật khẩu admin không đúng');
+      setAdminPassword('');
+    }
+  };
+
+  const handleAdminLogout = () => {
+    localStorage.removeItem('isAdmin');
+    setIsAdmin(false);
+    setTimeFilter('all');
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-600 via-indigo-600 to-purple-800 p-4 md:p-8">
       <div className="w-full max-w-6xl mx-auto">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-4xl md:text-5xl font-bold text-white flex items-center gap-3">
-            🏆 Bảng xếp hạng
-          </h1>
-          <Link
-            to="/quiz"
-            className="px-6 py-3 bg-white hover:bg-gray-100 text-indigo-600 font-bold rounded-lg transition duration-300"
-          >
-            ← Quay lại
-          </Link>
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-6">
+            <h1 className="text-4xl md:text-5xl font-bold text-white flex items-center gap-3">
+              🏆 Bảng xếp hạng
+            </h1>
+            <div className="flex gap-3">
+              {!isAdmin ? (
+                <button
+                  onClick={() => setShowAdminLogin(true)}
+                  className="px-4 py-2 bg-yellow-400 hover:bg-yellow-500 text-gray-800 font-bold rounded-lg transition duration-300 text-sm"
+                >
+                  👤 Admin
+                </button>
+              ) : (
+                <button
+                  onClick={handleAdminLogout}
+                  className="px-4 py-2 bg-red-400 hover:bg-red-500 text-white font-bold rounded-lg transition duration-300 text-sm"
+                >
+                  Đăng xuất Admin
+                </button>
+              )}
+              <Link
+                to="/quiz"
+                className="px-6 py-3 bg-white hover:bg-gray-100 text-indigo-600 font-bold rounded-lg transition duration-300"
+              >
+                ← Quay lại
+              </Link>
+            </div>
+          </div>
+
+          {/* Admin Login Modal */}
+          {showAdminLogin && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+              <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full">
+                <h2 className="text-2xl font-bold text-gray-800 mb-6">Đăng nhập Admin</h2>
+                <form onSubmit={handleAdminLogin} className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Mật khẩu Admin
+                    </label>
+                    <input
+                      type="password"
+                      value={adminPassword}
+                      onChange={(e) => setAdminPassword(e.target.value)}
+                      placeholder="Nhập mật khẩu"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      autoFocus
+                    />
+                  </div>
+                  <div className="flex gap-3">
+                    <button
+                      type="submit"
+                      className="flex-1 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg transition duration-300"
+                    >
+                      Đăng nhập
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowAdminLogin(false);
+                        setAdminPassword('');
+                      }}
+                      className="flex-1 px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold rounded-lg transition duration-300"
+                    >
+                      Hủy
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
+
+          {/* Admin Time Filter */}
+          {isAdmin && (
+            <div className="bg-white rounded-lg shadow-lg p-4 flex flex-wrap items-center gap-3">
+              <span className="font-semibold text-gray-700">Lọc theo thời gian:</span>
+              {['all', 'today', 'week', 'month'].map((filter) => (
+                <button
+                  key={filter}
+                  onClick={() => setTimeFilter(filter)}
+                  className={`px-4 py-2 rounded-lg font-semibold transition duration-300 ${
+                    timeFilter === filter
+                      ? 'bg-indigo-600 text-white'
+                      : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
+                  }`}
+                >
+                  {filter === 'all'
+                    ? 'Tất cả'
+                    : filter === 'today'
+                    ? 'Hôm nay'
+                    : filter === 'week'
+                    ? 'Tuần này'
+                    : 'Tháng này'}
+                </button>
+              ))}
+              <span className="ml-auto text-sm text-gray-600 font-semibold">
+                {isAdmin && filteredLeaderboard.length > 0
+                  ? `Hiển thị: ${filteredLeaderboard.length}/${leaderboard.length} kết quả`
+                  : ''}
+              </span>
+            </div>
+          )}
         </div>
 
         {loading ? (
@@ -95,7 +249,7 @@ export default function Leaderboard() {
                   </tr>
                 </thead>
                 <tbody>
-                  {leaderboard.map((item, index) => {
+                  {(isAdmin ? filteredLeaderboard : leaderboard).map((item, index) => {
                     const percentage = Math.round((item.correct / item.total) * 100);
                     const time = `${Math.floor(item.timeTaken / 60)}:${(item.timeTaken % 60)
                       .toString()
