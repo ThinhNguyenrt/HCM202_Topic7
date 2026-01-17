@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { quizData } from '../data/quizData';
+import { quizData, shuffleOptions } from '../data/quizData';
 import { db } from '../config/firebase';
 import { collection, addDoc } from 'firebase/firestore';
 
 export default function Quiz() {
   const navigate = useNavigate();
-  const [screen, setScreen] = useState('username'); // username, intro, quiz, loading
+  const [screen, setScreen] = useState('password'); // password, username, intro, quiz, loading
+  const [password, setPassword] = useState('');
+  const [passwordError, setPasswordError] = useState('');
   const [username, setUsername] = useState('');
   const [usernameError, setUsernameError] = useState('');
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -15,6 +17,8 @@ export default function Quiz() {
   const [startTime, setStartTime] = useState(null);
   const [showConfirmSubmit, setShowConfirmSubmit] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [shuffledQuestions, setShuffledQuestions] = useState([]);
+  const [ setQuizSeed] = useState(null);
 
   // Timer effect
   useEffect(() => {
@@ -32,6 +36,34 @@ export default function Quiz() {
     }
     return () => clearInterval(timer);
   }, [screen, timeLeft]);
+
+  const handlePasswordSubmit = (e) => {
+    e.preventDefault();
+    const trimmedPassword = password.trim();
+    
+    if (!trimmedPassword) {
+      setPasswordError('Vui lòng nhập mật khẩu');
+      return;
+    }
+
+    // ADMIN password - đi thẳng đến leaderboard
+    if (trimmedPassword === '123456') {
+      navigate('/leaderboard');
+      return;
+    }
+
+    // User password - tiếp tục tới nhập tên
+    if (trimmedPassword === 'user123') {
+      setPasswordError('');
+      setPassword('');
+      setScreen('username');
+      return;
+    }
+
+    // Sai password
+    setPasswordError('Mật khẩu không đúng');
+    setPassword('');
+  };
 
   const handleUsernameSubmit = (e) => {
     e.preventDefault();
@@ -63,6 +95,14 @@ export default function Quiz() {
   };
 
   const handleStartQuiz = () => {
+    // Create seed cho shuffle
+    const seed = Date.now();
+    setQuizSeed(seed);
+    
+    // Shuffle tất cả các câu hỏi
+    const shuffled = quizData.questions.map(q => shuffleOptions(q, seed));
+    setShuffledQuestions(shuffled);
+    
     setScreen('quiz');
     setStartTime(Date.now());
     // Load previous answers from sessionStorage if exists
@@ -95,7 +135,7 @@ export default function Quiz() {
   };
 
   const confirmSubmit = async () => {
-    const correctCount = quizData.questions.reduce((count, question, index) => {
+    const correctCount = shuffledQuestions.reduce((count, question, index) => {
       return answers[index] === question.correct ? count + 1 : count;
     }, 0);
 
@@ -143,6 +183,65 @@ export default function Quiz() {
     // Navigate to success page with state
     navigate('/success', { state: { result } });
   };
+
+  // Password Screen
+  if (screen === 'password') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-600 via-indigo-600 to-purple-800 flex items-center justify-center p-4">
+        <div className="w-full max-w-2xl">
+          <div className="bg-white rounded-3xl shadow-2xl p-12 md:p-16 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="text-center mb-8">
+              <h1 className="text-4xl md:text-5xl font-bold text-indigo-600 mb-3">
+                🔐 Xác thực
+              </h1>
+              <p className="text-gray-600 text-lg">
+                Vui lòng nhập mật khẩu để tiếp tục
+              </p>
+            </div>
+
+            <form onSubmit={handlePasswordSubmit} className="space-y-6">
+              <div>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    setPasswordError('');
+                  }}
+                  placeholder="Nhập mật khẩu..."
+                  className={`w-full px-6 py-4 text-lg border-2 rounded-xl focus:outline-none transition duration-300 ${
+                    passwordError
+                      ? 'border-red-500 focus:border-red-600 bg-red-50'
+                      : 'border-indigo-300 focus:border-indigo-600 focus:bg-indigo-50'
+                  }`}
+                  autoFocus
+                  onKeyPress={(e) => e.key === 'Enter' && handlePasswordSubmit(e)}
+                />
+                {passwordError && (
+                  <p className="text-red-600 text-sm font-semibold mt-2 flex items-center gap-2">
+                    ⚠️ {passwordError}
+                  </p>
+                )}
+              </div>
+
+              <button
+                type="submit"
+                className="w-full bg-gradient-to-r from-indigo-600 to-purple-700 hover:from-indigo-700 hover:to-purple-800 text-white font-bold py-4 px-6 rounded-lg text-lg uppercase tracking-wider transition duration-300 transform hover:-translate-y-1 hover:shadow-lg"
+              >
+                Xác thực →
+              </button>
+            </form>
+
+            <div className="mt-8 p-6 bg-indigo-50 rounded-xl border border-indigo-200">
+              <p className="text-sm text-gray-600 text-center">
+                ℹ️ Nhập mật khẩu để truy cập bài quiz hoặc bảng xếp hạng
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   // Username Screen
   if (screen === 'username') {
@@ -282,7 +381,7 @@ export default function Quiz() {
 
   // Quiz Screen
   if (screen === 'quiz') {
-    const question = quizData.questions[currentQuestion];
+    const question = shuffledQuestions[currentQuestion];
     const selectedAnswer = answers[currentQuestion];
     const answeredCount = Object.keys(answers).length;
 

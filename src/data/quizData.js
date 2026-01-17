@@ -1,3 +1,33 @@
+// Hàm xáo trộn thứ tự câu trả lời
+export const shuffleOptions = (question, seed) => {
+  // Sử dụng seed để đảm bảo xáo trộn giống nhau cho cùng một question
+  const random = ((seed + question.id) * 9301 + 49297) % 233280 / 233280;
+  
+  // Tạo mảng index
+  const indices = [0, 1, 2, 3];
+  
+  // Fisher-Yates shuffle với seed
+  let shuffled = [...indices];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor((random + i) * (i + 1)) % (i + 1);
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  
+  // Tạo mảng options mới với thứ tự đã xáo trộn
+  const newOptions = shuffled.map(i => question.options[i]);
+  
+  // Tìm vị trí mới của đáp án đúng
+  const oldCorrectOption = question.options[question.correct];
+  const newCorrect = newOptions.indexOf(oldCorrectOption);
+  
+  return {
+    ...question,
+    options: newOptions,
+    correct: newCorrect,
+    originalCorrect: question.correct // Lưu lại vị trí cũ cho reference
+  };
+};
+
 export const quizData = {
   title: "Quiz - Tư tưởng Hồ Chí Minh về Đại đoàn kết dân tộc",
   description: "Kiểm tra kiến thức của bạn về tư tưởng của Hồ Chí Minh liên quan đến đại đoàn kết dân tộc.",

@@ -8,6 +8,7 @@ import Quiz from './pages/Quiz.jsx'
 import Success from './pages/Success.jsx'
 import Results from './pages/Results.jsx'
 import Leaderboard from './pages/Leaderboard.jsx'
+import Statistics from './pages/Statistics.jsx'
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
             <Route path="/success" element={<Success />} />
             <Route path="/results" element={<Results />} />
             <Route path="/leaderboard" element={<Leaderboard />} />
+            <Route path="/statistics" element={<Statistics />} />
           </Routes>
         </main>
         <Footer />

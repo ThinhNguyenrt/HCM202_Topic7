@@ -1,9 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { db } from '../config/firebase';
 import { collection, query, orderBy, limit, getDocs } from 'firebase/firestore';
 import { Link } from 'react-router-dom';
 
 export default function Leaderboard() {
+  const navigate = useNavigate();
+  const [screen, setScreen] = useState('password'); // password, main
+  const [password, setPassword] = useState('');
+  const [passwordError, setPasswordError] = useState('');
   const [leaderboard, setLeaderboard] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -12,11 +17,53 @@ export default function Leaderboard() {
   const [timeFilter, setTimeFilter] = useState('all'); // 'all', 'today', 'week', 'month'
   const [filteredLeaderboard, setFilteredLeaderboard] = useState([]);
 
+  // Kiểm tra xem đã xác thực password chưa
+  useEffect(() => {
+    const isAuthenticated = sessionStorage.getItem('leaderboardAuth') === 'true';
+    if (isAuthenticated) {
+      setScreen('main');
+    }
+  }, []);
+
   // Kiểm tra admin status từ localStorage khi component mount
   useEffect(() => {
     const adminStatus = localStorage.getItem('isAdmin') === 'true';
     setIsAdmin(adminStatus);
   }, []);
+
+  const handlePasswordSubmit = (e) => {
+    e.preventDefault();
+    const trimmedPassword = password.trim();
+    
+    if (!trimmedPassword) {
+      setPasswordError('Vui lòng nhập mật khẩu');
+      return;
+    }
+
+    // Admin password - xác thực admin
+    if (trimmedPassword === '123456') {
+      setPasswordError('');
+      setPassword('');
+      sessionStorage.setItem('leaderboardAuth', 'true');
+      localStorage.setItem('isAdmin', 'true');
+      setIsAdmin(true);
+      setScreen('main');
+      return;
+    }
+
+    // User password
+    if (trimmedPassword === 'user123') {
+      setPasswordError('');
+      setPassword('');
+      sessionStorage.setItem('leaderboardAuth', 'true');
+      setScreen('main');
+      return;
+    }
+
+    // Sai password
+    setPasswordError('Mật khẩu không đúng');
+    setPassword('');
+  };
 
   // Lọc dữ liệu khi timeFilter thay đổi hoặc leaderboard thay đổi
   useEffect(() => {
@@ -49,9 +96,12 @@ export default function Leaderboard() {
     }
   }, [timeFilter, leaderboard]);
 
+  // Fetch leaderboard khi screen thay đổi thành 'main'
   useEffect(() => {
-    fetchLeaderboard();
-  }, []);
+    if (screen === 'main') {
+      fetchLeaderboard();
+    }
+  }, [screen]);
 
   const fetchLeaderboard = async () => {
     try {
@@ -91,9 +141,13 @@ export default function Leaderboard() {
     return position;
   };
 
+  const handleViewDetail = (user) => {
+    navigate('/statistics', { state: { user } });
+  };
+
   const handleAdminLogin = (e) => {
     e.preventDefault();
-    const ADMIN_PASSWORD = 'admin123'; // Có thể thay đổi hoặc lưu trong env
+    const ADMIN_PASSWORD = '123456'; // Đồng bộ với password screen
     if (adminPassword === ADMIN_PASSWORD) {
       localStorage.setItem('isAdmin', 'true');
       setIsAdmin(true);
@@ -111,6 +165,66 @@ export default function Leaderboard() {
     setTimeFilter('all');
   };
 
+  // Password Screen
+  if (screen === 'password') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-600 via-indigo-600 to-purple-800 flex items-center justify-center p-4">
+        <div className="w-full max-w-2xl">
+          <div className="bg-white rounded-3xl shadow-2xl p-12 md:p-16 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="text-center mb-8">
+              <h1 className="text-4xl md:text-5xl font-bold text-indigo-600 mb-3">
+                🔐 Xác thực
+              </h1>
+              <p className="text-gray-600 text-lg">
+                Nhập mật khẩu để xem bảng xếp hạng
+              </p>
+            </div>
+
+            <form onSubmit={handlePasswordSubmit} className="space-y-6">
+              <div>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    setPasswordError('');
+                  }}
+                  placeholder="Nhập mật khẩu..."
+                  className={`w-full px-6 py-4 text-lg border-2 rounded-xl focus:outline-none transition duration-300 ${
+                    passwordError
+                      ? 'border-red-500 focus:border-red-600 bg-red-50'
+                      : 'border-indigo-300 focus:border-indigo-600 focus:bg-indigo-50'
+                  }`}
+                  autoFocus
+                  onKeyPress={(e) => e.key === 'Enter' && handlePasswordSubmit(e)}
+                />
+                {passwordError && (
+                  <p className="text-red-600 text-sm font-semibold mt-2 flex items-center gap-2">
+                    ⚠️ {passwordError}
+                  </p>
+                )}
+              </div>
+
+              <button
+                type="submit"
+                className="w-full bg-gradient-to-r from-indigo-600 to-purple-700 hover:from-indigo-700 hover:to-purple-800 text-white font-bold py-4 px-6 rounded-lg text-lg uppercase tracking-wider transition duration-300 transform hover:-translate-y-1 hover:shadow-lg"
+              >
+                Xác thực →
+              </button>
+            </form>
+
+            <div className="mt-8 p-6 bg-indigo-50 rounded-xl border border-indigo-200">
+              <p className="text-sm text-gray-600 text-center">
+                ℹ️ Nhập mật khẩu để truy cập bảng xếp hạng
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Main Leaderboard Screen
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-600 via-indigo-600 to-purple-800 p-4 md:p-8">
       <div className="w-full max-w-6xl mx-auto">
@@ -246,11 +360,12 @@ export default function Leaderboard() {
                     <th className="px-6 py-4 text-center text-sm font-bold uppercase tracking-wider">Đúng/Tổng</th>
                     <th className="px-6 py-4 text-center text-sm font-bold uppercase tracking-wider">Thời gian</th>
                     <th className="px-6 py-4 text-center text-sm font-bold uppercase tracking-wider">Ngày</th>
+                    {isAdmin && <th className="px-6 py-4 text-center text-sm font-bold uppercase tracking-wider">Hành động</th>}
                   </tr>
                 </thead>
                 <tbody>
                   {(isAdmin ? filteredLeaderboard : leaderboard).map((item, index) => {
-                    const percentage = Math.round((item.correct / item.total) * 100);
+                    const score = ((item.correct / item.total) * 10).toFixed(1);
                     const time = `${Math.floor(item.timeTaken / 60)}:${(item.timeTaken % 60)
                       .toString()
                       .padStart(2, '0')}`;
@@ -282,7 +397,7 @@ export default function Leaderboard() {
                         </td>
                         <td className="px-6 py-4 text-center">
                           <span className="inline-block px-4 py-2 bg-indigo-100 text-indigo-600 font-bold rounded-lg text-lg">
-                            {percentage}%
+                            {score}/10
                           </span>
                         </td>
                         <td className="px-6 py-4 text-center font-semibold text-gray-800">
@@ -291,6 +406,16 @@ export default function Leaderboard() {
                         </td>
                         <td className="px-6 py-4 text-center font-semibold text-gray-800">{time}</td>
                         <td className="px-6 py-4 text-center text-sm text-gray-600">{date}</td>
+                        {isAdmin && (
+                          <td className="px-6 py-4 text-center">
+                            <button
+                              onClick={() => handleViewDetail(item)}
+                              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg text-sm transition duration-300"
+                            >
+                              Chi tiết
+                            </button>
+                          </td>
+                        )}
                       </tr>
                     );
                   })}
@@ -298,44 +423,47 @@ export default function Leaderboard() {
               </table>
             </div>
 
-            {/* Summary Stats */}
-            <div className="bg-gray-50 px-6 py-6 border-t border-gray-200 grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="text-center">
-                <p className="text-xs uppercase text-gray-500 font-semibold tracking-wider mb-1">
-                  Tổng người chơi
-                </p>
-                <p className="text-3xl font-bold text-indigo-600">{leaderboard.length}</p>
+            {/* Summary Stats - Only for Admin */}
+            {isAdmin && (
+              <div className="bg-gray-50 px-6 py-6 border-t border-gray-200 grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="text-center">
+                  <p className="text-xs uppercase text-gray-500 font-semibold tracking-wider mb-1">
+                    Tổng người chơi
+                  </p>
+                  <p className="text-3xl font-bold text-indigo-600">{leaderboard.length}</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-xs uppercase text-gray-500 font-semibold tracking-wider mb-1">
+                    Điểm cao nhất
+                  </p>
+                  <p className="text-3xl font-bold text-green-600">
+                    {((leaderboard[0].correct / leaderboard[0].total) * 10).toFixed(1)}/10
+                  </p>
+                </div>
+                <div className="text-center">
+                  <p className="text-xs uppercase text-gray-500 font-semibold tracking-wider mb-1">
+                    Thời gian nhanh nhất
+                  </p>
+                  <p className="text-3xl font-bold text-purple-600">
+                    {(() => {
+                      const minTime = Math.min(...leaderboard.map(item => item.timeTaken));
+                      return `${Math.floor(minTime / 60)}:${(minTime % 60).toString().padStart(2, '0')}`;
+                    })()}
+                  </p>
+                </div>
+                <div className="text-center">
+                  <p className="text-xs uppercase text-gray-500 font-semibold tracking-wider mb-1">
+                    Điểm trung bình
+                  </p>
+                  <p className="text-3xl font-bold text-indigo-600">
+                    {(
+                      leaderboard.reduce((sum, item) => sum + (item.correct / item.total) * 10, 0) /
+                        leaderboard.length
+                    ).toFixed(1)}/10
+                  </p>
+                </div>
               </div>
-              <div className="text-center">
-                <p className="text-xs uppercase text-gray-500 font-semibold tracking-wider mb-1">
-                  Điểm cao nhất
-                </p>
-                <p className="text-3xl font-bold text-green-600">
-                  {Math.round((leaderboard[0].correct / leaderboard[0].total) * 100)}%
-                </p>
-              </div>
-              <div className="text-center">
-                <p className="text-xs uppercase text-gray-500 font-semibold tracking-wider mb-1">
-                  Thời gian nhanh nhất
-                </p>
-                <p className="text-3xl font-bold text-purple-600">
-                  {Math.floor(leaderboard[0].timeTaken / 60)}:{(leaderboard[0].timeTaken % 60)
-                    .toString()
-                    .padStart(2, '0')}
-                </p>
-              </div>
-              <div className="text-center">
-                <p className="text-xs uppercase text-gray-500 font-semibold tracking-wider mb-1">
-                  Điểm trung bình
-                </p>
-                <p className="text-3xl font-bold text-indigo-600">
-                  {Math.round(
-                    leaderboard.reduce((sum, item) => sum + (item.correct / item.total) * 100, 0) /
-                      leaderboard.length
-                  )}%
-                </p>
-              </div>
-            </div>
+            )}
           </div>
         )}
       </div>
