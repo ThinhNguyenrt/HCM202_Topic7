@@ -120,7 +120,7 @@ export default function Statistics() {
             </div>
             <div className="bg-indigo-50 p-6 rounded-lg border-2 border-indigo-300">
               <p className="text-sm font-semibold text-gray-600 uppercase mb-2">🎯 Tổng điểm</p>
-              <p className="text-4xl font-bold text-indigo-600">{((userDetail.correct / userDetail.total) * 10).toFixed(1)}</p>
+              <p className="text-4xl font-bold text-indigo-600">{((answerStats.correct / answerStats.total) * 10).toFixed(1)}</p>
               <p className="text-sm text-gray-500 mt-1">/ 10</p>
             </div>
           </div>

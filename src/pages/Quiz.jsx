@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { quizData, shuffleOptions } from '../data/quizData';
+import { quizData } from '../data/quizData';
 import { db } from '../config/firebase';
 import { collection, addDoc } from 'firebase/firestore';
 
@@ -17,8 +17,6 @@ export default function Quiz() {
   const [startTime, setStartTime] = useState(null);
   const [showConfirmSubmit, setShowConfirmSubmit] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [shuffledQuestions, setShuffledQuestions] = useState([]);
-  const [ setQuizSeed] = useState(null);
 
   // Timer effect
   useEffect(() => {
@@ -95,21 +93,14 @@ export default function Quiz() {
   };
 
   const handleStartQuiz = () => {
-    // Create seed cho shuffle
-    const seed = Date.now();
-    setQuizSeed(seed);
-    
-    // Shuffle tất cả các câu hỏi
-    const shuffled = quizData.questions.map(q => shuffleOptions(q, seed));
-    setShuffledQuestions(shuffled);
-    
+    // Reset tất cả state cho quiz mới
+    setTimeLeft(quizData.duration * 60);
+    setCurrentQuestion(0);
+    setAnswers({});
     setScreen('quiz');
     setStartTime(Date.now());
-    // Load previous answers from sessionStorage if exists
-    const savedAnswers = sessionStorage.getItem('quizAnswers');
-    if (savedAnswers) {
-      setAnswers(JSON.parse(savedAnswers));
-    }
+    // Xóa dữ liệu cũ từ sessionStorage
+    sessionStorage.removeItem('quizAnswers');
   };
 
   const handleSelectAnswer = (optionIndex) => {
@@ -135,7 +126,7 @@ export default function Quiz() {
   };
 
   const confirmSubmit = async () => {
-    const correctCount = shuffledQuestions.reduce((count, question, index) => {
+    const correctCount = quizData.questions.reduce((count, question, index) => {
       return answers[index] === question.correct ? count + 1 : count;
     }, 0);
 
@@ -381,7 +372,7 @@ export default function Quiz() {
 
   // Quiz Screen
   if (screen === 'quiz') {
-    const question = shuffledQuestions[currentQuestion];
+    const question = quizData.questions[currentQuestion];
     const selectedAnswer = answers[currentQuestion];
     const answeredCount = Object.keys(answers).length;
 

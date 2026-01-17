@@ -14,8 +14,6 @@ export default function Leaderboard() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [showAdminLogin, setShowAdminLogin] = useState(false);
   const [adminPassword, setAdminPassword] = useState('');
-  const [timeFilter, setTimeFilter] = useState('all'); // 'all', 'today', 'week', 'month'
-  const [filteredLeaderboard, setFilteredLeaderboard] = useState([]);
 
   // Kiểm tra xem đã xác thực password chưa
   useEffect(() => {
@@ -65,37 +63,6 @@ export default function Leaderboard() {
     setPassword('');
   };
 
-  // Lọc dữ liệu khi timeFilter thay đổi hoặc leaderboard thay đổi
-  useEffect(() => {
-    if (leaderboard.length > 0) {
-      const now = new Date();
-      const filtered = leaderboard.filter((item) => {
-        const itemDate = new Date(item.completedAt);
-        
-        switch (timeFilter) {
-          case 'today':
-            return (
-              itemDate.getDate() === now.getDate() &&
-              itemDate.getMonth() === now.getMonth() &&
-              itemDate.getFullYear() === now.getFullYear()
-            );
-          case 'week': {
-            const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-            return itemDate >= weekAgo;
-          }
-          case 'month': {
-            const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-            return itemDate >= monthAgo;
-          }
-          case 'all':
-          default:
-            return true;
-        }
-      });
-      setFilteredLeaderboard(filtered);
-    }
-  }, [timeFilter, leaderboard]);
-
   // Fetch leaderboard khi screen thay đổi thành 'main'
   useEffect(() => {
     if (screen === 'main') {
@@ -106,10 +73,10 @@ export default function Leaderboard() {
   const fetchLeaderboard = async () => {
     try {
       setLoading(true);
-      // Chỉ sử dụng một orderBy để tránh cần composite index
+      // Lấy tất cả kết quả
       const q = query(
         collection(db, 'quizResults'),
-        orderBy('score', 'desc'),
+        orderBy('completedAt', 'desc'),
         limit(100)
       );
       const querySnapshot = await getDocs(q);
@@ -118,15 +85,41 @@ export default function Leaderboard() {
         results.push({ id: doc.id, ...doc.data() });
       });
       
-      // Sắp xếp lại bằng JavaScript: điểm cao trước, nếu điểm bằng thì thời gian nhanh hơn
-      results.sort((a, b) => {
-        if (a.score !== b.score) {
-          return b.score - a.score; // Điểm cao hơn lên trước
-        }
-        return a.timeTaken - b.timeTaken; // Nếu điểm bằng, thời gian nhanh hơn lên trước
+      // Lọc theo ngày hôm nay
+      const now = new Date();
+      const todayResults = results.filter((item) => {
+        const itemDate = new Date(item.completedAt);
+        return (
+          itemDate.getDate() === now.getDate() &&
+          itemDate.getMonth() === now.getMonth() &&
+          itemDate.getFullYear() === now.getFullYear()
+        );
       });
+
+      // Sắp xếp: số câu đúng giảm dần, rồi thời gian tăng dần
+      todayResults.sort((a, b) => {
+        if (a.correct !== b.correct) {
+          return b.correct - a.correct; // Số câu đúng nhiều hơn lên trước
+        }
+        return a.timeTaken - b.timeTaken; // Nếu số câu bằng, thời gian nhanh hơn lên trước
+      });
+
+      // Xử lý logic top 3: nếu có >3 người cùng số câu đúng cao nhất, chỉ lấy 3 người
+      let finalResults = [];
+      if (todayResults.length > 0) {
+        const maxCorrect = todayResults[0].correct;
+        const topScorers = todayResults.filter(item => item.correct === maxCorrect);
+        
+        if (topScorers.length > 3) {
+          // Chỉ lấy 3 người nhanh nhất
+          finalResults = topScorers.slice(0, 3);
+        } else {
+          // Lấy tất cả từ maxCorrect trở xuống
+          finalResults = todayResults;
+        }
+      }
       
-      setLeaderboard(results);
+      setLeaderboard(finalResults);
     } catch (error) {
       console.error('Lỗi khi lấy leaderboard:', error);
     } finally {
@@ -162,7 +155,6 @@ export default function Leaderboard() {
   const handleAdminLogout = () => {
     localStorage.removeItem('isAdmin');
     setIsAdmin(false);
-    setTimeFilter('all');
   };
 
   // Password Screen
@@ -301,33 +293,11 @@ export default function Leaderboard() {
             </div>
           )}
 
-          {/* Admin Time Filter */}
+          {/* Info Message */}
           {isAdmin && (
-            <div className="bg-white rounded-lg shadow-lg p-4 flex flex-wrap items-center gap-3">
-              <span className="font-semibold text-gray-700">Lọc theo thời gian:</span>
-              {['all', 'today', 'week', 'month'].map((filter) => (
-                <button
-                  key={filter}
-                  onClick={() => setTimeFilter(filter)}
-                  className={`px-4 py-2 rounded-lg font-semibold transition duration-300 ${
-                    timeFilter === filter
-                      ? 'bg-indigo-600 text-white'
-                      : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
-                  }`}
-                >
-                  {filter === 'all'
-                    ? 'Tất cả'
-                    : filter === 'today'
-                    ? 'Hôm nay'
-                    : filter === 'week'
-                    ? 'Tuần này'
-                    : 'Tháng này'}
-                </button>
-              ))}
-              <span className="ml-auto text-sm text-gray-600 font-semibold">
-                {isAdmin && filteredLeaderboard.length > 0
-                  ? `Hiển thị: ${filteredLeaderboard.length}/${leaderboard.length} kết quả`
-                  : ''}
+            <div className="bg-blue-50 rounded-lg shadow-lg p-4 border border-blue-200">
+              <span className="text-sm text-blue-800 font-semibold">
+                ℹ️ Hiển thị bảng xếp hạng của ngày hôm nay - Xếp hạng theo số câu đúng nhiều nhất và thời gian nhanh nhất
               </span>
             </div>
           )}
@@ -348,7 +318,15 @@ export default function Leaderboard() {
             </Link>
           </div>
         ) : (
-          <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
+          <>
+            {/* Ranking Explanation */}
+            <div className="mb-4 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-lg p-4 border-l-4 border-indigo-600">
+              <p className="text-sm text-gray-700">
+                <span className="font-bold text-indigo-600">🏆 Cơ chế xếp hạng:</span> Xếp hạng theo số câu đúng nhiều nhất trong ngày. Nếu cùng số câu đúng, xếp theo thời gian làm bài nhanh nhất. Top 3 sẽ được hiển thị.
+              </p>
+            </div>
+
+            <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
             {/* Leaderboard Table */}
             <div className="overflow-x-auto">
               <table className="w-full">
@@ -364,7 +342,7 @@ export default function Leaderboard() {
                   </tr>
                 </thead>
                 <tbody>
-                  {(isAdmin ? filteredLeaderboard : leaderboard).map((item, index) => {
+                  {leaderboard.map((item, index) => {
                     const score = ((item.correct / item.total) * 10).toFixed(1);
                     const time = `${Math.floor(item.timeTaken / 60)}:${(item.timeTaken % 60)
                       .toString()
@@ -465,6 +443,7 @@ export default function Leaderboard() {
               </div>
             )}
           </div>
+          </>
         )}
       </div>
     </div>
