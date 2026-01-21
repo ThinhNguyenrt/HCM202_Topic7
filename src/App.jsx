@@ -5,6 +5,7 @@ import Home from './pages/Home.jsx'
 import Ideal from './pages/Ideal.jsx'
 import Values from './pages/Values.jsx'
 import Quiz from './pages/Quiz.jsx'
+import AIUsage from './pages/AIUsage.jsx'
 import Success from './pages/Success.jsx'
 import Results from './pages/Results.jsx'
 import Leaderboard from './pages/Leaderboard.jsx'
@@ -21,6 +22,7 @@ function App() {
             <Route path="/tu-tuong-hcm" element={<Ideal />} />
             <Route path="/gia-tri-vai-tro" element={<Values />} />
             <Route path="/quiz" element={<Quiz />} />
+            <Route path="/ai-usage" element={<AIUsage />} />
             <Route path="/success" element={<Success />} />
             <Route path="/results" element={<Results />} />
             <Route path="/leaderboard" element={<Leaderboard />} />
