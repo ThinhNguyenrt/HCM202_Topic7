@@ -18,7 +18,7 @@ function Navbar() {
           {/* Logo/Brand */}
           <div className="flex-shrink-0">
             <h1 className="text-3xl font-bold text-white drop-shadow-lg">
-              Tư tưởng HCM
+              The Crew
             </h1>
           </div>
 

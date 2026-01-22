@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Brain, MessageCircle, CheckCircle, AlertCircle, XCircle, Zap } from 'lucide-react';
+import { Brain, MessageCircle, CheckCircle, AlertCircle, XCircle, Zap, Heart } from 'lucide-react';
 
 function AIUsage() {
   const [activeStep, setActiveStep] = useState(null);
@@ -88,48 +88,55 @@ function AIUsage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-red-50">
+    <div className="min-h-screen bg-gradient-to-b from-red-600 via-red-500 to-orange-500 py-8 px-4 sm:px-6 lg:px-8">
       {/* Hero Section */}
-      <section className="pt-20 pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={containerVariants}
-          className="text-center"
-        >
-          <motion.h1
-            variants={itemVariants}
-            className="text-5xl md:text-6xl font-bold text-red-900 mb-6 drop-shadow-sm"
-          >
-            Sử dụng AI & Cam kết Liêm chính
-          </motion.h1>
-          <motion.p
-            variants={itemVariants}
-            className="text-xl md:text-2xl text-red-700 mb-8 max-w-3xl mx-auto"
-          >
-            Công cụ hỗ trợ thông minh được sử dụng có trách nhiệm và minh bạch để phục vụ nghiên cứu Tư tưởng Hồ Chí Minh
-          </motion.p>
+      <section className="mb-8">
+        <div className="max-w-7xl mx-auto bg-white rounded-2xl border-2 border-gray-200 p-10 md:p-12 group cursor-pointer hover:border-red-400 transition-all duration-500">
           <motion.div
-            variants={itemVariants}
-            className="h-1 w-24 bg-gradient-to-r from-red-900 to-yellow-600 mx-auto"
-          ></motion.div>
-        </motion.div>
+            initial="hidden"
+            animate="visible"
+            variants={containerVariants}
+            className="text-center"
+          >
+            <motion.div
+              variants={itemVariants}
+              className="flex items-center justify-center gap-3 mb-4"
+            >
+              <Zap className="w-12 h-12 text-red-600" />
+              <h1 className="text-5xl md:text-6xl font-bold text-gray-800">
+                Sử dụng AI & Cam kết Liêm chính
+              </h1>
+            </motion.div>
+            <motion.p
+              variants={itemVariants}
+              className="text-xl md:text-2xl text-gray-700 mb-8 max-w-3xl mx-auto"
+            >
+              Công cụ hỗ trợ thông minh được sử dụng có trách nhiệm và minh bạch để phục vụ nghiên cứu Tư tưởng Hồ Chí Minh
+            </motion.p>
+            <motion.div
+              variants={itemVariants}
+              className="h-1 w-24 bg-red-600 mx-auto rounded-full"
+            ></motion.div>
+          </motion.div>
+        </div>
       </section>
 
       {/* AI Tools Section */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: '-100px' }}
-          variants={containerVariants}
-        >
-          <motion.h2
-            variants={itemVariants}
-            className="text-4xl font-bold text-red-900 mb-12 text-center"
+      <section className="mb-8">
+        <div className="max-w-7xl mx-auto bg-white rounded-2xl border-2 border-gray-200 p-8 md:p-10 group cursor-pointer hover:border-red-400 transition-all duration-500">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: '-100px' }}
+            variants={containerVariants}
           >
-            Công cụ AI được sử dụng
-          </motion.h2>
+            <motion.h2
+              variants={itemVariants}
+              className="text-4xl font-bold text-gray-800 mb-12 text-center flex items-center justify-center gap-3"
+            >
+              <Brain className="w-10 h-10 text-red-600" />
+              Công cụ AI được sử dụng
+            </motion.h2>
 
           <div className="grid md:grid-cols-2 gap-8">
             {aiTools.map((tool, index) => {
@@ -162,10 +169,12 @@ function AIUsage() {
             })}
           </div>
         </motion.div>
+        </div>
       </section>
 
       {/* Workflow Section */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      <section className="mb-8">
+        <div className="max-w-7xl mx-auto bg-white rounded-2xl border-2 border-gray-200 p-8 md:p-10 group cursor-pointer hover:border-red-400 transition-all duration-500">
         <motion.div
           initial="hidden"
           whileInView="visible"
@@ -174,8 +183,9 @@ function AIUsage() {
         >
           <motion.h2
             variants={itemVariants}
-            className="text-4xl font-bold text-red-900 mb-12 text-center"
+            className="text-4xl font-bold text-red-900 mb-12 text-center flex items-center justify-center gap-3"
           >
+            <CheckCircle className="w-10 h-10 text-red-600" />
             Quy trình Kiểm chứng Nội dung
           </motion.h2>
 
@@ -243,10 +253,12 @@ function AIUsage() {
             })}
           </div>
         </motion.div>
+        </div>
       </section>
 
       {/* Commitment Section */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      <section className="mb-8">
+        <div className="max-w-7xl mx-auto bg-white rounded-2xl border-2 border-gray-200 p-8 md:p-10 group cursor-pointer hover:border-red-400 transition-all duration-500">
         <motion.div
           initial="hidden"
           whileInView="visible"
@@ -255,16 +267,17 @@ function AIUsage() {
         >
           <motion.h2
             variants={itemVariants}
-            className="text-4xl font-bold text-red-900 mb-12 text-center"
+            className="text-4xl font-bold text-red-900 mb-12 text-center flex items-center justify-center gap-3"
           >
+            <Heart className="w-10 h-10 text-red-600" />
             Cam kết Liêm chính
           </motion.h2>
 
           <motion.div
             variants={itemVariants}
-            className="bg-gradient-to-r from-red-900 via-red-800 to-yellow-700 p-12 rounded-2xl text-white shadow-xl"
+            className="bg-gradient-to-r from-red-600 via-red-500 to-orange-500 p-12 rounded-2xl text-white shadow-2xl hover:shadow-2xl hover:scale-[1.02] transition-all duration-500"
           >
-            <p className="text-lg mb-8 leading-relaxed">
+            <p className="text-lg mb-8 leading-relaxed drop-shadow-md">
               Chúng tôi cam kết sử dụng công nghệ AI một cách có trách nhiệm, minh bạch và liêm chính. AI là công cụ hỗ trợ, không thay thế con người. Mọi nội dung được cung cấp đều trải qua quá trình kiểm duyệt kỹ lưỡng và đối chiếu với các tài liệu chính gốc.
             </p>
 
@@ -276,19 +289,21 @@ function AIUsage() {
                   whileInView={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.1 }}
                   viewport={{ once: true }}
-                  className="flex items-center gap-3 bg-white/10 p-3 rounded-lg backdrop-blur-sm hover:bg-white/15 transition-colors"
+                  className="flex items-center gap-3 bg-white/15 p-4 rounded-lg backdrop-blur-sm hover:bg-white/25 hover:translate-x-2 transition-all duration-300 group cursor-pointer"
                 >
-                  <span className="text-xl font-bold text-yellow-300 flex-shrink-0">✓</span>
-                  <p className="text-white/90 text-sm">{item}</p>
+                  <span className="text-2xl font-bold text-yellow-300 flex-shrink-0 group-hover:scale-125 transition-transform">✓</span>
+                  <p className="text-white/95 font-semibold group-hover:text-yellow-200 transition-colors">{item}</p>
                 </motion.div>
               ))}
             </div>
           </motion.div>
         </motion.div>
+        </div>
       </section>
 
       {/* Reference Section */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      <section className="mb-8">
+        <div className="max-w-7xl mx-auto bg-white rounded-2xl border-2 border-gray-200 p-8 md:p-10 group cursor-pointer hover:border-red-400 transition-all duration-500">
         <motion.div
           initial="hidden"
           whileInView="visible"
@@ -297,17 +312,22 @@ function AIUsage() {
         >
           <motion.div
             variants={itemVariants}
-            className="bg-gradient-to-r from-yellow-50 to-red-50 border-2 border-red-900 p-8 rounded-xl"
+            className="bg-gradient-to-r from-yellow-50 to-red-50 border-2 border-red-600 p-8 rounded-xl shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-500 group cursor-pointer"
           >
-            <h3 className="text-2xl font-bold text-red-900 mb-4">📚 Tài liệu Tham khảo Chính</h3>
-            <p className="text-gray-700 leading-relaxed">
+            <h3 className="text-2xl font-bold text-red-900 mb-4 flex items-center gap-3">
+              <span className="text-3xl group-hover:animate-bounce">📚</span>
+              Tài liệu Tham khảo Chính
+            </h3>
+            <p className="text-gray-700 leading-relaxed group-hover:text-gray-800 transition-colors">
               Tất cả nội dung trên trang web này được kiểm duyệt và so sánh với{' '}
-              <span className="font-bold text-red-900">
+              <span className="font-bold text-red-600 bg-red-100 px-2 py-1 rounded group-hover:bg-red-200 transition-colors">
                 Giáo trình Tư tưởng Hồ Chí Minh
               </span>{' '}
+              để đảm bảo độ chính xác và tính liêm chính của nội dung
             </p>
           </motion.div>
         </motion.div>
+        </div>
       </section>
     </div>
   );

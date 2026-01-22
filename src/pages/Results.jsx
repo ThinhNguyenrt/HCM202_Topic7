@@ -21,7 +21,6 @@ export default function Results() {
   let resultMessage = '';
   let resultIcon = '';
   let resultColor = '';
-  let badgeColor = '';
 
   if (percentage >= 80) {
     resultMessage = 'Xuất sắc! 🎉';
@@ -46,15 +45,15 @@ export default function Results() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-600 via-indigo-600 to-purple-800 p-4 md:p-8">
-      <div className="w-full max-w-4xl mx-auto">
-        <div className={`bg-gradient-to-br ${badgeColor} rounded-3xl shadow-2xl p-10 md:p-16 animate-in fade-in slide-in-from-bottom-4 duration-500`}>
+    <div className="min-h-screen bg-gradient-to-b from-red-600 via-red-500 to-orange-500 py-8 px-4 sm:px-6 lg:px-8">
+      <section className="mb-8">
+        <div className="w-full max-w-4xl mx-auto bg-white rounded-2xl border-2 border-gray-200 p-10 md:p-16 group cursor-pointer hover:border-red-400 transition-all duration-500 animate-in fade-in slide-in-from-bottom-4">
           <div className="text-center mb-8">
             <div className="text-8xl md:text-9xl mb-4">{resultIcon}</div>
             <h2 className={`text-4xl md:text-5xl font-bold bg-gradient-to-r ${resultColor} bg-clip-text text-transparent mb-2`}>
               {resultMessage}
             </h2>
-            <p className="text-xl text-gray-600">Xin chào, <span className="font-bold text-indigo-600">{username}</span></p>
+            <p className="text-xl text-gray-600">Xin chào, <span className="font-bold text-red-600">{username}</span></p>
           </div>
 
           {/* Score Circle */}
@@ -69,20 +68,20 @@ export default function Results() {
           </div>
 
           {/* Details Grid */}
-          <div className="grid grid-cols-3 gap-4 md:gap-6 mb-10 p-8 bg-white rounded-2xl shadow-lg">
+          <div className="grid grid-cols-3 gap-4 md:gap-6 mb-10 p-8 bg-white rounded-2xl shadow-lg hover:shadow-2xl hover:scale-[1.01] transition-all duration-300 group cursor-pointer">
             <div className="text-center">
               <p className="text-xs md:text-sm uppercase text-gray-500 font-bold tracking-wider mb-2">Đúng</p>
-              <p className="text-3xl md:text-4xl font-bold text-green-600">{correct}</p>
+              <p className="text-3xl md:text-4xl font-bold text-green-600 group-hover:scale-110 transition-transform">{correct}</p>
               <p className="text-xs text-gray-400 mt-1">/{total}</p>
             </div>
             <div className="text-center border-l border-r border-gray-200">
               <p className="text-xs md:text-sm uppercase text-gray-500 font-bold tracking-wider mb-2">Sai</p>
-              <p className="text-3xl md:text-4xl font-bold text-red-600">{total - correct}</p>
+              <p className="text-3xl md:text-4xl font-bold text-red-600 group-hover:scale-110 transition-transform">{total - correct}</p>
               <p className="text-xs text-gray-400 mt-1">/{total}</p>
             </div>
             <div className="text-center">
               <p className="text-xs md:text-sm uppercase text-gray-500 font-bold tracking-wider mb-2">Thời gian</p>
-              <p className="text-3xl md:text-4xl font-bold text-indigo-600">
+              <p className="text-3xl md:text-4xl font-bold text-red-600 group-hover:scale-110 transition-transform">
                 {minutesTaken}:{secondsTaken < 10 ? '0' : ''}{secondsTaken}
               </p>
             </div>
@@ -92,9 +91,9 @@ export default function Results() {
           <div className="flex flex-col md:flex-row gap-4 mb-10 justify-center flex-wrap">
             <Link
               to="/quiz"
-              className="px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold rounded-lg transition duration-300 transform hover:-translate-y-1 hover:shadow-lg text-lg text-center"
+              className="px-8 py-4 bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-700 hover:to-orange-600 text-white font-bold rounded-lg transition duration-300 transform hover:-translate-y-1 hover:shadow-lg hover:shadow-red-600/50 text-lg text-center group hover:scale-110"
             >
-              🔄 Làm lại
+              <span className="group-hover:animate-spin inline-mr-2">🔄</span> Làm lại
             </Link>
             <Link
               to="/leaderboard"
@@ -147,7 +146,7 @@ export default function Results() {
             </div>
           </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 }

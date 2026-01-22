@@ -1,17 +1,26 @@
 import Tanglop from '../assets/tanglop.jpg'
+import hinh5 from '../assets/hinh5.jpg'
+import { Clock, BookOpen, Users } from 'lucide-react'
+import { useState } from 'react'
+
 function Ideal() {
+  const [hoveredCard, setHoveredCard] = useState(null)
+
   const timelineCards = [
     {
       title: "Trước khi giành chính quyền",
-      description: "Xây dựng khối đoàn kết rộng rãi, tập hợp mọi lực lượng yêu nước để chuẩn bị cho cuộc tổng khởi nghĩa"
+      description: "Xây dựng khối đoàn kết rộng rãi, tập hợp mọi lực lượng yêu nước để chuẩn bị cho cuộc tổng khởi nghĩa",
+      icon: Clock
     },
     {
       title: "Trong quá trình đấu tranh cách mạng",
-      description: "Duy trì và củng cố khối đoàn kết, huy động sức mạnh toàn dân tộc đấu tranh giành độc lập"
+      description: "Duy trì và củng cố khối đoàn kết, huy động sức mạnh toàn dân tộc đấu tranh giành độc lập",
+      icon: BookOpen
     },
     {
       title: "Sau khi cách mạng thành công",
-      description: "Tiếp tục phát huy đại đoàn kết để xây dựng và bảo vệ Tổ quốc, phát triển đất nước"
+      description: "Tiếp tục phát huy đại đoàn kết để xây dựng và bảo vệ Tổ quốc, phát triển đất nước",
+      icon: Users
     }
   ];
 
@@ -30,12 +39,13 @@ function Ideal() {
   ];
 
   return (
-    <div className="bg-[#F5F5F0] min-h-screen">
+    <div className="min-h-screen bg-gradient-to-b from-red-600 via-red-500 to-orange-500 py-8 px-4 sm:px-6 lg:px-8">
       {/* SECTION 1 - Mở đầu */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8 animate-fade-in-down">
-        <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-800 mb-6 hover:text-red-600 transition-colors duration-500">
-            Tư tưởng Hồ Chí Minh về đại đoàn kết dân tộc
+      <section className="mb-8 animate-fade-in-down">
+        <div className="max-w-4xl mx-auto bg-white rounded-2xl border-2 border-gray-200 p-8 md:p-12 text-center group cursor-pointer hover:border-red-400 transition-all duration-500">
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-800 mb-6 hover:text-red-600 transition-colors duration-500 drop-shadow-lg flex items-center justify-center gap-3">
+            <BookOpen className="w-12 h-12 animate-bounce" />
+            <span>Tư tưởng Hồ Chí Minh về đại đoàn kết dân tộc</span>
           </h1>
           <p className="text-xl md:text-2xl text-gray-700 leading-relaxed">
             Đại đoàn kết dân tộc là nội dung cốt lõi trong tư tưởng Hồ Chí Minh, giữ vai trò quyết định đối với sự thành công và phát triển bền vững của cách mạng Việt Nam.
@@ -44,23 +54,24 @@ function Ideal() {
       </section>
 
       {/* SECTION 2 - Chiến lược xuyên suốt */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-white">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-800 mb-8 animate-fade-in-up">
-            Đại đoàn kết dân tộc – chiến lược xuyên suốt của cách mạng Việt Nam
+      <section className="mb-8 animate-fade-in-up" style={{animationDelay: '0.2s'}}>
+        <div className="max-w-6xl mx-auto bg-white rounded-2xl border-2 border-gray-200 p-8 md:p-10 group cursor-pointer hover:border-red-400 transition-all duration-500">
+          <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-800 mb-8 flex items-center justify-center gap-3">
+            <span className="text-red-600">⚡</span>
+            <span>Đại đoàn kết dân tộc – chiến lược xuyên suốt của cách mạng Việt Nam</span>
           </h2>
           
-          <div className="bg-gradient-to-r from-red-50 to-orange-50 rounded-xl p-8 mb-12 border-l-4 border-red-600 hover:shadow-xl transition-all duration-500 animate-fade-in-left">
+          <div className="bg-gradient-to-r from-red-50 to-orange-50 rounded-xl p-8 mb-12 border-l-4 border-red-600 hover:shadow-2xl hover:scale-[1.01] transition-all duration-500 animate-fade-in-left group cursor-pointer">
             <ul className="space-y-4 text-lg text-gray-700">
-              <li className="flex items-start animate-slide-in-right">
+              <li className="flex items-start animate-slide-in-right hover:text-red-600 hover:translate-x-2 transition-all duration-300 group-hover:font-semibold">
                 <span className="text-red-600 font-bold mr-3 text-2xl">•</span>
                 <span>Hồ Chí Minh khẳng định cách mạng là sự nghiệp của quần chúng</span>
               </li>
-              <li className="flex items-start animate-slide-in-right" style={{ animationDelay: '0.1s' }}>
+              <li className="flex items-start animate-slide-in-right" style={{ animationDelay: '0.1s' }} className="hover:text-red-600 hover:translate-x-2 transition-all duration-300 group-hover:font-semibold">
                 <span className="text-red-600 font-bold mr-3 text-2xl">•</span>
                 <span>Đại đoàn kết không phải sách lược tình thế</span>
               </li>
-              <li className="flex items-start animate-slide-in-right" style={{ animationDelay: '0.2s' }}>
+              <li className="flex items-start animate-slide-in-right" style={{ animationDelay: '0.2s' }} className="hover:text-red-600 hover:translate-x-2 transition-all duration-300 group-hover:font-semibold">
                 <span className="text-red-600 font-bold mr-3 text-2xl">•</span>
                 <span>Là đường lối lâu dài – nhất quán – bền vững</span>
               </li>
@@ -72,30 +83,37 @@ function Ideal() {
           </h3>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {timelineCards.map((card, index) => (
-              <div
-                key={index}
-                className="relative bg-white rounded-xl shadow-lg p-8 border-t-4 border-red-600 hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 group animate-fade-in-up"
-                style={{ animationDelay: `${index * 0.15}s` }}
-              >
-                <div className="absolute -top-4 left-8 w-12 h-12 bg-gradient-to-br from-red-600 to-orange-500 rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                  <span className="text-white text-xl font-bold">{index + 1}</span>
+            {timelineCards.map((card, index) => {
+              const Icon = card.icon
+              return (
+                <div
+                  key={index}
+                  onMouseEnter={() => setHoveredCard(index)}
+                  onMouseLeave={() => setHoveredCard(null)}
+                  className="relative bg-white rounded-xl shadow-lg p-8 border-t-4 border-red-600 hover:shadow-2xl hover:-translate-y-3 transition-all duration-500 group animate-fade-in-up cursor-pointer hover:bg-gradient-to-br hover:from-red-50 hover:to-orange-50"
+                  style={{ animationDelay: `${index * 0.15}s` }}
+                >
+                  <div className="absolute -top-4 left-8 w-16 h-16 bg-gradient-to-br from-red-600 to-orange-500 rounded-full flex items-center justify-center shadow-lg group-hover:scale-125 group-hover:rotate-12 transition-all duration-300">
+                    <Icon className="w-8 h-8 text-white" />
+                  </div>
+                  <h4 className="text-xl font-bold text-gray-800 mt-8 mb-4 group-hover:text-red-600 transition-colors duration-300 flex items-center gap-2">
+                    {card.title}
+                    <span className={`text-2xl transition-all duration-300 ${hoveredCard === index ? 'scale-125 rotate-45' : ''}`}>✨</span>
+                  </h4>
+                  <p className="text-gray-600 leading-relaxed group-hover:text-gray-700 transition-colors">
+                    {card.description}
+                  </p>
+                  <div className={`mt-4 h-1 bg-gradient-to-r from-red-600 to-orange-500 rounded-full transition-all duration-500 ${hoveredCard === index ? 'w-full' : 'w-0'}`}></div>
                 </div>
-                <h4 className="text-xl font-bold text-gray-800 mt-6 mb-4 group-hover:text-red-600 transition-colors duration-300">
-                  {card.title}
-                </h4>
-                <p className="text-gray-600 leading-relaxed">
-                  {card.description}
-                </p>
-              </div>
-            ))}
+              )
+            })}
           </div>
         </div>
       </section>
 
       {/* SECTION 3 - Đoàn kết toàn dân (có hình) */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-6xl mx-auto">
+      <section className="mb-8 animate-fade-in-up" style={{animationDelay: '0.4s'}}>
+        <div className="max-w-6xl mx-auto bg-white rounded-2xl border-2 border-gray-200 p-8 md:p-10 group cursor-pointer hover:border-red-400 transition-all duration-500">
           <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-800 mb-12 animate-fade-in-up">
             Đoàn kết toàn dân
           </h2>
@@ -139,8 +157,8 @@ function Ideal() {
       </section>
 
       {/* SECTION 4 - Mặt trận dân tộc thống nhất */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-white">
-        <div className="max-w-5xl mx-auto">
+      <section className="mb-8 animate-fade-in-up" style={{animationDelay: '0.6s'}}>
+        <div className="max-w-5xl mx-auto bg-white rounded-2xl border-2 border-gray-200 p-8 md:p-10 group cursor-pointer hover:border-red-400 transition-all duration-500">
           <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-800 mb-12 animate-fade-in-up">
             Mặt trận dân tộc thống nhất
           </h2>
@@ -179,6 +197,17 @@ function Ideal() {
               ))}
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* IMAGE SECTION */}
+      <section className="mb-8 animate-fade-in-up" style={{animationDelay: '0.8s'}}>
+        <div className="max-w-5xl mx-auto bg-white rounded-2xl border-2 border-gray-200 p-6 md:p-8 group cursor-pointer hover:border-red-400 transition-all duration-500">
+          <img 
+            src={hinh5} 
+            alt="Chiến lược đại đoàn kết dân tộc lâu dài"
+            className="w-full h-auto rounded-xl hover:scale-105 transition-all duration-500 object-cover"
+          />
         </div>
       </section>
 
