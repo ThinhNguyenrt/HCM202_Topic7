@@ -1,11 +1,20 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
+import UnityTree from '../components/UnityTree/UnityTree';
 
 export default function Success() {
   const location = useLocation();
   const navigate = useNavigate();
   
   const resultData = location.state?.result;
+
+  // Lưu trạng thái xác thực user để có thể xem bảng xếp hạng mà không cần nhập lại mật khẩu
+  useEffect(() => {
+    if (resultData) {
+      sessionStorage.setItem('userAuthenticated', 'true');
+      sessionStorage.setItem('leaderboardAuth', 'true');
+    }
+  }, [resultData]);
 
   if (!resultData) {
     navigate('/quiz');
@@ -92,6 +101,11 @@ export default function Success() {
                 </p>
               </div>
             )}
+          </div>
+
+          {/* Unity Tree Component */}
+          <div className="mb-10 border-t-2 border-gray-300 pt-10">
+            <UnityTree totalCorrect={correct} totalUsers={30} />
           </div>
 
           {/* Action Buttons */}

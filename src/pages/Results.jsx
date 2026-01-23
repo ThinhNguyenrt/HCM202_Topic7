@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { quizData } from '../data/quizData';
 
@@ -7,6 +7,14 @@ export default function Results() {
   const navigate = useNavigate();
   
   const resultData = location.state?.result;
+
+  // Lưu trạng thái xác thực user để có thể xem bảng xếp hạng mà không cần nhập lại mật khẩu
+  useEffect(() => {
+    if (resultData) {
+      sessionStorage.setItem('userAuthenticated', 'true');
+      sessionStorage.setItem('leaderboardAuth', 'true');
+    }
+  }, [resultData]);
 
   if (!resultData) {
     navigate('/quiz');

@@ -46,6 +46,8 @@ export default function Quiz() {
 
     // ADMIN password - đi thẳng đến leaderboard
     if (trimmedPassword === '123456') {
+      sessionStorage.setItem('userAuthenticated', 'true');
+      localStorage.setItem('isAdmin', 'true');
       navigate('/leaderboard');
       return;
     }
@@ -54,6 +56,7 @@ export default function Quiz() {
     if (trimmedPassword === 'user123') {
       setPasswordError('');
       setPassword('');
+      sessionStorage.setItem('userAuthenticated', 'true');
       setScreen('username');
       return;
     }
@@ -178,11 +181,11 @@ export default function Quiz() {
   // Password Screen
   if (screen === 'password') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-600 via-indigo-600 to-purple-800 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-b from-red-600 via-red-500 to-orange-500 flex items-center justify-center p-4">
         <div className="w-full max-w-2xl">
           <div className="bg-white rounded-3xl shadow-2xl p-12 md:p-16 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="text-center mb-8">
-              <h1 className="text-4xl md:text-5xl font-bold text-indigo-600 mb-3">
+              <h1 className="text-4xl md:text-5xl font-bold text-red-600 mb-3">
                 🔐 Xác thực
               </h1>
               <p className="text-gray-600 text-lg">
@@ -203,7 +206,7 @@ export default function Quiz() {
                   className={`w-full px-6 py-4 text-lg border-2 rounded-xl focus:outline-none transition duration-300 ${
                     passwordError
                       ? 'border-red-500 focus:border-red-600 bg-red-50'
-                      : 'border-indigo-300 focus:border-indigo-600 focus:bg-indigo-50'
+                      : 'border-red-300 focus:border-red-600 focus:bg-red-50'
                   }`}
                   autoFocus
                   onKeyPress={(e) => e.key === 'Enter' && handlePasswordSubmit(e)}
@@ -217,13 +220,13 @@ export default function Quiz() {
 
               <button
                 type="submit"
-                className="w-full bg-gradient-to-r from-indigo-600 to-purple-700 hover:from-indigo-700 hover:to-purple-800 text-white font-bold py-4 px-6 rounded-lg text-lg uppercase tracking-wider transition duration-300 transform hover:-translate-y-1 hover:shadow-lg"
+                className="w-full bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white font-bold py-4 px-6 rounded-lg text-lg uppercase tracking-wider transition duration-300 transform hover:-translate-y-1 hover:shadow-lg"
               >
                 Xác thực →
               </button>
             </form>
 
-            <div className="mt-8 p-6 bg-indigo-50 rounded-xl border border-indigo-200">
+            <div className="mt-8 p-6 bg-red-50 rounded-xl border border-red-200">
               <p className="text-sm text-gray-600 text-center">
                 ℹ️ Nhập mật khẩu để truy cập bài quiz hoặc bảng xếp hạng
               </p>
@@ -237,11 +240,11 @@ export default function Quiz() {
   // Username Screen
   if (screen === 'username') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-600 via-indigo-600 to-purple-800 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-b from-red-600 via-red-500 to-orange-500 flex items-center justify-center p-4">
         <div className="w-full max-w-2xl">
           <div className="bg-white rounded-3xl shadow-2xl p-12 md:p-16 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="text-center mb-8">
-              <h1 className="text-4xl md:text-5xl font-bold text-indigo-600 mb-3">
+              <h1 className="text-4xl md:text-5xl font-bold text-red-600 mb-3">
                 👋 Xin chào!
               </h1>
               <p className="text-gray-600 text-lg">
@@ -262,7 +265,7 @@ export default function Quiz() {
                   className={`w-full px-6 py-4 text-lg border-2 rounded-xl focus:outline-none transition duration-300 ${
                     usernameError
                       ? 'border-red-500 focus:border-red-600 bg-red-50'
-                      : 'border-indigo-300 focus:border-indigo-600 focus:bg-indigo-50'
+                      : 'border-red-300 focus:border-red-600 focus:bg-red-50'
                   }`}
                   autoFocus
                   onKeyPress={(e) => e.key === 'Enter' && handleUsernameSubmit(e)}
@@ -276,13 +279,13 @@ export default function Quiz() {
 
               <button
                 type="submit"
-                className="w-full bg-gradient-to-r from-indigo-600 to-purple-700 hover:from-indigo-700 hover:to-purple-800 text-white font-bold py-4 px-6 rounded-lg text-lg uppercase tracking-wider transition duration-300 transform hover:-translate-y-1 hover:shadow-lg"
+                className="w-full bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white font-bold py-4 px-6 rounded-lg text-lg uppercase tracking-wider transition duration-300 transform hover:-translate-y-1 hover:shadow-lg"
               >
                 Tiếp tục →
               </button>
             </form>
 
-            <div className="mt-8 p-6 bg-indigo-50 rounded-xl border border-indigo-200">
+            <div className="mt-8 p-6 bg-red-50 rounded-xl border border-red-200">
               <p className="text-sm text-gray-600 text-center">
                 ℹ️ Tên của bạn sẽ được hiển thị trên bảng xếp hạng
               </p>
@@ -296,22 +299,22 @@ export default function Quiz() {
   // Intro Screen
   if (screen === 'intro') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-600 via-indigo-600 to-purple-800 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-b from-red-600 via-red-500 to-orange-500 flex items-center justify-center p-4">
         <div className="w-full max-w-2xl">
           <div className="bg-white rounded-3xl shadow-2xl p-12 md:p-16 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <h1 className="text-4xl md:text-5xl font-bold text-center text-indigo-600 mb-4">
+            <h1 className="text-4xl md:text-5xl font-bold text-center text-red-600 mb-4">
               📚 {quizData.title}
             </h1>
             <p className="text-center text-gray-600 text-lg mb-8 leading-relaxed">
               {quizData.description}
             </p>
 
-            <div className="grid grid-cols-3 gap-4 md:gap-6 mb-8 p-6 bg-indigo-50 rounded-2xl">
+            <div className="grid grid-cols-3 gap-4 md:gap-6 mb-8 p-6 bg-red-50 rounded-2xl">
               <div className="text-center">
                 <p className="text-xs md:text-sm uppercase text-gray-500 font-semibold tracking-wider mb-2">
                   Số câu
                 </p>
-                <p className="text-3xl md:text-4xl font-bold text-indigo-600">
+                <p className="text-3xl md:text-4xl font-bold text-red-600">
                   {quizData.questions.length}
                 </p>
               </div>
@@ -319,7 +322,7 @@ export default function Quiz() {
                 <p className="text-xs md:text-sm uppercase text-gray-500 font-semibold tracking-wider mb-2">
                   Thời gian
                 </p>
-                <p className="text-3xl md:text-4xl font-bold text-indigo-600">
+                <p className="text-3xl md:text-4xl font-bold text-red-600">
                   {quizData.duration} phút
                 </p>
               </div>
@@ -327,14 +330,14 @@ export default function Quiz() {
                 <p className="text-xs md:text-sm uppercase text-gray-500 font-semibold tracking-wider mb-2">
                   Loại
                 </p>
-                <p className="text-2xl md:text-3xl font-bold text-indigo-600">
+                <p className="text-2xl md:text-3xl font-bold text-red-600">
                   🎯
                 </p>
               </div>
             </div>
 
-            <div className="bg-indigo-100 border-l-4 border-indigo-600 p-6 rounded-lg mb-8">
-              <h3 className="text-lg font-bold text-indigo-600 mb-4">Hướng dẫn:</h3>
+            <div className="bg-red-100 border-l-4 border-red-600 p-6 rounded-lg mb-8">
+              <h3 className="text-lg font-bold text-red-600 mb-4">Hướng dẫn:</h3>
               <ul className="space-y-3 text-gray-700">
                 <li>✓ Bạn có {quizData.duration} phút để hoàn thành bài quiz</li>
                 <li>✓ Bài quiz có {quizData.questions.length} câu hỏi trắc nghiệm</li>
@@ -347,21 +350,21 @@ export default function Quiz() {
             <div className="flex gap-4 flex-col md:flex-row mb-6">
               <button
                 onClick={handleStartQuiz}
-                className="flex-1 bg-gradient-to-r from-indigo-600 to-purple-700 hover:from-indigo-700 hover:to-purple-800 text-white font-bold py-4 px-6 rounded-lg text-lg uppercase tracking-wider transition duration-300 transform hover:-translate-y-1 hover:shadow-lg"
+                className="flex-1 bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white font-bold py-4 px-6 rounded-lg text-lg uppercase tracking-wider transition duration-300 transform hover:-translate-y-1 hover:shadow-lg"
               >
                 Bắt đầu làm bài
               </button>
               <button
                 onClick={() => setScreen('username')}
-                className="flex-1 bg-white hover:bg-gray-100 text-indigo-600 font-bold py-4 px-6 rounded-lg border-2 border-indigo-600 text-lg uppercase transition duration-300"
+                className="flex-1 bg-white hover:bg-gray-100 text-red-600 font-bold py-4 px-6 rounded-lg border-2 border-red-600 text-lg uppercase transition duration-300"
               >
                 Đổi tên
               </button>
             </div>
 
-            <div className="p-4 bg-indigo-50 rounded-lg text-center">
-              <p className="text-indigo-600 font-semibold">
-                Đang chơi với tên: <span className="text-indigo-700 font-bold">{username}</span>
+            <div className="p-4 bg-red-50 rounded-lg text-center">
+              <p className="text-red-600 font-semibold">
+                Đang chơi với tên: <span className="text-red-700 font-bold">{username}</span>
               </p>
             </div>
           </div>
@@ -377,29 +380,29 @@ export default function Quiz() {
     const answeredCount = Object.keys(answers).length;
 
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-600 via-indigo-600 to-purple-800 p-4 md:p-6 flex flex-col">
+      <div className="min-h-screen bg-gradient-to-b from-red-600 via-red-500 to-orange-500 p-4 md:p-6 flex flex-col">
         {/* Timer Section */}
         <div className="w-full max-w-4xl mx-auto mb-6">
           <div className="bg-white rounded-2xl shadow-lg p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div className="flex-1">
-              <h2 className="text-xl font-bold text-indigo-600 mb-3">
+              <h2 className="text-xl font-bold text-red-600 mb-3">
                 Câu {currentQuestion + 1}/{quizData.questions.length}
               </h2>
               <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-gradient-to-r from-indigo-600 to-purple-600 transition-all duration-300"
+                  className="h-full bg-gradient-to-r from-red-600 to-orange-600 transition-all duration-300"
                   style={{ width: `${((currentQuestion + 1) / quizData.questions.length) * 100}%` }}
                 ></div>
               </div>
             </div>
             <div className="flex gap-4 md:gap-8 md:whitespace-nowrap">
               <div className={`text-center md:text-right px-4 py-2 rounded-lg font-bold text-lg ${
-                timeLeft < 60 ? 'bg-red-100 text-red-600 animate-pulse' : 'bg-indigo-100 text-indigo-600'
+                timeLeft < 60 ? 'bg-red-100 text-red-600 animate-pulse' : 'bg-red-100 text-red-600'
               }`}>
                 ⏱️ {formatTime(timeLeft)}
               </div>
-              <div className="text-center md:text-right text-sm font-semibold text-gray-600 px-4 py-2 bg-indigo-50 rounded-lg">
-                Đã trả lời: <span className="text-indigo-600 font-bold">{answeredCount}/{quizData.questions.length}</span>
+              <div className="text-center md:text-right text-sm font-semibold text-gray-600 px-4 py-2 bg-red-50 rounded-lg">
+                Đã trả lời: <span className="text-red-600 font-bold">{answeredCount}/{quizData.questions.length}</span>
               </div>
             </div>
           </div>
@@ -419,13 +422,13 @@ export default function Quiz() {
                   onClick={() => handleSelectAnswer(index)}
                   className={`w-full p-5 text-left rounded-xl font-semibold transition duration-300 transform flex items-center gap-4 ${
                     selectedAnswer === index
-                      ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg scale-105'
-                      : 'bg-gray-50 hover:bg-indigo-50 text-gray-800 border-2 border-transparent hover:border-indigo-300'
+                      ? 'bg-gradient-to-r from-red-600 to-orange-600 text-white shadow-lg scale-105'
+                      : 'bg-gray-50 hover:bg-red-50 text-gray-800 border-2 border-transparent hover:border-red-300'
                   }`}
                 >
                   <span className={`flex items-center justify-center w-10 h-10 rounded-lg font-bold text-base ${
                     selectedAnswer === index
-                      ? 'bg-white text-indigo-600'
+                      ? 'bg-white text-red-600'
                       : 'bg-gray-200 text-gray-700'
                   }`}>
                     {String.fromCharCode(65 + index)}
@@ -452,7 +455,7 @@ export default function Quiz() {
             <select
               value={currentQuestion}
               onChange={(e) => setCurrentQuestion(Number(e.target.value))}
-              className="px-4 py-3 border-2 border-indigo-300 rounded-lg font-semibold text-gray-800 focus:outline-none focus:border-indigo-600 bg-white cursor-pointer min-w-40"
+              className="px-4 py-3 border-2 border-red-300 rounded-lg font-semibold text-gray-800 focus:outline-none focus:border-red-600 bg-white cursor-pointer min-w-40"
             >
               {quizData.questions.map((_, index) => (
                 <option key={index} value={index}>
@@ -472,7 +475,7 @@ export default function Quiz() {
             {currentQuestion === quizData.questions.length - 1 && (
               <button
                 onClick={handleSubmitQuiz}
-                className="px-8 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold rounded-lg transition duration-300 transform hover:-translate-y-1 hover:shadow-lg min-w-40"
+                className="px-8 py-3 bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white font-bold rounded-lg transition duration-300 transform hover:-translate-y-1 hover:shadow-lg min-w-40"
               >
                 Nộp bài
               </button>
@@ -486,21 +489,21 @@ export default function Quiz() {
             <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full animate-in fade-in zoom-in-95 duration-300">
               <h3 className="text-2xl font-bold text-gray-800 mb-4">Xác nhận nộp bài</h3>
               <p className="text-gray-600 mb-3 text-lg">
-                Bạn đã trả lời <span className="font-bold text-indigo-600">{Object.keys(answers).length}</span> câu trong tổng số <span className="font-bold text-indigo-600">{quizData.questions.length}</span> câu.
+                Bạn đã trả lời <span className="font-bold text-red-600">{Object.keys(answers).length}</span> câu trong tổng số <span className="font-bold text-red-600">{quizData.questions.length}</span> câu.
               </p>
               <p className="text-gray-600 mb-6 text-lg">Bạn chắc chắn muốn nộp bài không?</p>
               <div className="flex gap-4">
                 <button
                   onClick={() => setShowConfirmSubmit(false)}
                   disabled={isSubmitting}
-                  className="flex-1 px-4 py-3 bg-indigo-100 hover:bg-indigo-200 disabled:opacity-50 text-indigo-600 font-bold rounded-lg transition duration-300 border-2 border-indigo-600 disabled:cursor-not-allowed"
+                  className="flex-1 px-4 py-3 bg-red-100 hover:bg-red-200 disabled:opacity-50 text-red-600 font-bold rounded-lg transition duration-300 border-2 border-red-600 disabled:cursor-not-allowed"
                 >
                   Tiếp tục làm bài
                 </button>
                 <button
                   onClick={confirmSubmit}
                   disabled={isSubmitting}
-                  className="flex-1 px-4 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold rounded-lg transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="flex-1 px-4 py-3 bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white font-bold rounded-lg transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                   {isSubmitting ? (
                     <>

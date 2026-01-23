@@ -13,21 +13,21 @@ export default function Leaderboard() {
   const [leaderboard, setLeaderboard] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isUserAuthenticated, setIsUserAuthenticated] = useState(false);
   const [showAdminLogin, setShowAdminLogin] = useState(false);
   const [adminPassword, setAdminPassword] = useState('');
 
   // Kiểm tra xem đã xác thực password chưa
   useEffect(() => {
-    const isAuthenticated = sessionStorage.getItem('leaderboardAuth') === 'true';
-    if (isAuthenticated) {
+    const userAuth = sessionStorage.getItem('userAuthenticated') === 'true';
+    const leaderboardAuth = sessionStorage.getItem('leaderboardAuth') === 'true';
+    const adminStatus = localStorage.getItem('isAdmin') === 'true';
+    
+    if (userAuth || leaderboardAuth) {
+      setIsUserAuthenticated(true);
+      setIsAdmin(adminStatus);
       setScreen('main');
     }
-  }, []);
-
-  // Kiểm tra admin status từ localStorage khi component mount
-  useEffect(() => {
-    const adminStatus = localStorage.getItem('isAdmin') === 'true';
-    setIsAdmin(adminStatus);
   }, []);
 
   const handlePasswordSubmit = (e) => {
@@ -44,8 +44,10 @@ export default function Leaderboard() {
       setPasswordError('');
       setPassword('');
       sessionStorage.setItem('leaderboardAuth', 'true');
+      sessionStorage.setItem('userAuthenticated', 'true');
       localStorage.setItem('isAdmin', 'true');
       setIsAdmin(true);
+      setIsUserAuthenticated(true);
       setScreen('main');
       return;
     }
@@ -55,6 +57,8 @@ export default function Leaderboard() {
       setPasswordError('');
       setPassword('');
       sessionStorage.setItem('leaderboardAuth', 'true');
+      sessionStorage.setItem('userAuthenticated', 'true');
+      setIsUserAuthenticated(true);
       setScreen('main');
       return;
     }
@@ -105,22 +109,8 @@ export default function Leaderboard() {
         return a.timeTaken - b.timeTaken; // Nếu số câu bằng, thời gian nhanh hơn lên trước
       });
 
-      // Xử lý logic top 3: nếu có >3 người cùng số câu đúng cao nhất, chỉ lấy 3 người
-      let finalResults = [];
-      if (todayResults.length > 0) {
-        const maxCorrect = todayResults[0].correct;
-        const topScorers = todayResults.filter(item => item.correct === maxCorrect);
-        
-        if (topScorers.length > 3) {
-          // Chỉ lấy 3 người nhanh nhất
-          finalResults = topScorers.slice(0, 3);
-        } else {
-          // Lấy tất cả từ maxCorrect trở xuống
-          finalResults = todayResults;
-        }
-      }
-      
-      setLeaderboard(finalResults);
+      // Hiển thị tất cả người làm quiz trong ngày hôm đó
+      setLeaderboard(todayResults);
     } catch (error) {
       console.error('Lỗi khi lấy leaderboard:', error);
     } finally {
@@ -155,7 +145,11 @@ export default function Leaderboard() {
 
   const handleAdminLogout = () => {
     localStorage.removeItem('isAdmin');
+    sessionStorage.removeItem('leaderboardAuth');
+    sessionStorage.removeItem('userAuthenticated');
     setIsAdmin(false);
+    setIsUserAuthenticated(false);
+    setScreen('password');
   };
 
   // Password Screen
@@ -249,10 +243,10 @@ export default function Leaderboard() {
                   </button>
                 )}
                 <Link
-                  to="/quiz"
-                  className="px-6 py-3 bg-white hover:bg-yellow-50 text-red-600 font-bold rounded-lg transition duration-300 transform hover:scale-105 hover:shadow-lg hover:-translate-y-1"
+                  to="/"
+                  className="px-6 py-3 bg-white hover:bg-gray-100 text-red-600 font-bold rounded-lg transition duration-300 transform hover:scale-105 hover:shadow-lg hover:-translate-y-1"
                 >
-                  ← Quay lại
+                  🏠 Trang chủ
                 </Link>
               </div>
             </div>
@@ -338,7 +332,7 @@ export default function Leaderboard() {
             {/* Ranking Explanation */}
             <div className="mb-4 bg-white rounded-lg p-4 border-l-4 border-yellow-400 shadow-lg hover:shadow-xl transition-all duration-300 group cursor-pointer">
               <p className="text-sm text-gray-700 group-hover:text-gray-800 transition-colors">
-                <span className="font-bold text-yellow-600 group-hover:text-yellow-700">🏆 Cơ chế xếp hạng:</span> Xếp hạng theo số câu đúng nhiều nhất trong ngày. Nếu cùng số câu đúng, xếp theo thời gian làm bài nhanh nhất. Top 3 sẽ được hiển thị.
+                <span className="font-bold text-yellow-600 group-hover:text-yellow-700">🏆 Cơ chế xếp hạng:</span> Hiển thị tất cả người làm quiz trong ngày. Xếp hạng theo số câu đúng nhiều nhất. Nếu cùng số câu đúng, xếp theo thời gian làm bài nhanh nhất.
               </p>
             </div>
 
