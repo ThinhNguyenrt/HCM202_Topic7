@@ -21,6 +21,7 @@ export default function Results() {
   let resultMessage = '';
   let resultIcon = '';
   let resultColor = '';
+  let badgeColor = '';
 
   if (percentage >= 80) {
     resultMessage = 'Xuất sắc! 🎉';
@@ -93,7 +94,7 @@ export default function Results() {
               to="/quiz"
               className="px-8 py-4 bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-700 hover:to-orange-600 text-white font-bold rounded-lg transition duration-300 transform hover:-translate-y-1 hover:shadow-lg hover:shadow-red-600/50 text-lg text-center group hover:scale-110"
             >
-              <span className="group-hover:animate-spin inline-mr-2">🔄</span> Làm lại
+              <span className="group-hover:animate-spin inline mr-2">🔄</span> Làm lại
             </Link>
             <Link
               to="/leaderboard"

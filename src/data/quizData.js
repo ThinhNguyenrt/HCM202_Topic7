@@ -31,7 +31,7 @@ export const shuffleOptions = (question, seed) => {
 export const quizData = {
   title: "Quiz - Tư tưởng Hồ Chí Minh về Đại đoàn kết dân tộc",
   description: "Kiểm tra kiến thức của bạn về tư tưởng của Hồ Chí Minh liên quan đến đại đoàn kết dân tộc.",
-  duration: 10, // 10 minutes
+  duration: 5, // 5 minutes
   questions: [
     {
       id: 1,
@@ -233,25 +233,25 @@ export const quizData = {
     },
     {
       id: 19,
-      question: "Nhận định nào đúng với tư tưởng Hồ Chí Minh?",
+      question: "Trong luận điểm \"Đại đoàn kết dân tộc là một chiến lược cách mạng\", từ \"chiến lược\" ở đây hàm chứa ý nghĩa nào sau đây?",
       options: [
-        "Đoàn kết là sách lược linh hoạt",
-        "Đoàn kết chỉ cần khi chiến tranh",
-        "Đoàn kết là chiến lược lâu dài",
-        "Đoàn kết chỉ dành cho giai cấp công nhân"
+        "Là một thủ đoạn chính trị cần thiết trong giai đoạn đối đầu với kẻ thù mạnh.",
+        "Là biện pháp khôn khéo để lôi kéo các giai cấp trung gian về phía cách mạng.",
+        "Là sự kết hợp nhất thời giữa các đảng phái có cùng mục tiêu đánh đuổi ngoại xâm.",
+        "Là sợi chỉ đỏ xuyên suốt, quyết định thành bại trong cả giai đoạn cách mạng dân tộc và xây dựng chủ nghĩa xã hội."
       ],
-      correct: 2
+      correct: 3
     },
     {
       id: 20,
-      question: "Kết luận đúng nhất về đại đoàn kết dân tộc là:",
+      question: "Hồ Chí Minh đã giải quyết mối quan hệ giữa \"đoàn kết\" và \"đấu tranh\" trong nội bộ Mặt trận dân tộc thống nhất như thế nào để đảm bảo tính chiến lược?",
       options: [
-        "Biện pháp tạm thời của cách mạng",
-        "Công cụ chính trị ngắn hạn",
-        "Chiến lược sống còn của cách mạng Việt Nam",
-        "Phương pháp tuyên truyền"
+        "Đoàn kết thông qua đấu tranh tự phê bình và phê bình để đi đến sự thống nhất mới cao hơn trên cơ sở lợi ích chung.",
+        "Đấu tranh giai cấp triệt để là tiền đề, sau đó mới tiến hành đoàn kết dân tộc.",
+        "Đấu tranh để loại bỏ những phần tử có tư tưởng khác biệt ra khỏi hàng ngũ.",
+        "Đoàn kết không có đấu tranh, luôn nhân nhượng để giữ vững sự hòa khí trong Mặt trận."
       ],
-      correct: 2
+      correct: 0
     }
   ]
 };
