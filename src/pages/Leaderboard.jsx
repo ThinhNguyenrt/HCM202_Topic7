@@ -239,7 +239,7 @@ export default function Leaderboard() {
                     onClick={handleAdminLogout}
                     className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition duration-300 text-sm transform hover:scale-110 hover:shadow-lg"
                   >
-                    Đăng xuất Admin
+                    Đăng xuất 
                   </button>
                 )}
                 <Link

@@ -314,17 +314,24 @@ function AIUsage() {
             variants={itemVariants}
             className="bg-gradient-to-r from-yellow-50 to-red-50 border-2 border-red-600 p-8 rounded-xl shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-500 group cursor-pointer"
           >
-            <h3 className="text-2xl font-bold text-red-900 mb-4 flex items-center gap-3">
+            <h3 className="text-2xl font-bold text-red-900 mb-6 flex items-center gap-3">
               <span className="text-3xl group-hover:animate-bounce">📚</span>
-              Tài liệu Tham khảo Chính
+              Tài liệu Tham khảo Chính thống
             </h3>
-            <p className="text-gray-700 leading-relaxed group-hover:text-gray-800 transition-colors">
-              Tất cả nội dung trên trang web này được kiểm duyệt và so sánh với{' '}
-              <span className="font-bold text-red-600 bg-red-100 px-2 py-1 rounded group-hover:bg-red-200 transition-colors">
-                Giáo trình Tư tưởng Hồ Chí Minh
-              </span>{' '}
-              để đảm bảo độ chính xác và tính liêm chính của nội dung
-            </p>
+            <div className="space-y-4">
+              <div className="flex gap-4 items-start bg-white p-4 rounded-lg hover:shadow-md transition-shadow">
+                <span className="text-2xl font-bold text-red-600 bg-red-100 px-3 py-1 rounded h-fit group-hover:bg-red-200 transition-colors">(1)</span>
+                <p className="text-gray-700 leading-relaxed group-hover:text-gray-800 transition-colors pt-1">
+                  Giáo trình tư tưởng Hồ Chí Minh.
+                </p>
+              </div>
+              <div className="flex gap-4 items-start bg-white p-4 rounded-lg hover:shadow-md transition-shadow">
+                <span className="text-2xl font-bold text-red-600 bg-red-100 px-3 py-1 rounded h-fit group-hover:bg-red-200 transition-colors">(2)</span>
+                <p className="text-gray-700 leading-relaxed group-hover:text-gray-800 transition-colors pt-1">
+                  Tác phẩm <span className="font-semibold text-red-600">"Đường Kách Mệnh"</span> - Chủ tịch Hồ Chí Minh
+                </p>
+              </div>
+            </div>
           </motion.div>
         </motion.div>
         </div>

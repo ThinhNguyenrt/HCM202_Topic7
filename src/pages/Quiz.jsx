@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Eye, EyeOff } from 'lucide-react';
 import { quizData } from '../data/quizData';
 import { db } from '../config/firebase';
 import { collection, addDoc } from 'firebase/firestore';
@@ -9,6 +10,7 @@ export default function Quiz() {
   const [screen, setScreen] = useState('password'); // password, username, intro, quiz, loading
   const [password, setPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [username, setUsername] = useState('');
   const [usernameError, setUsernameError] = useState('');
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -195,22 +197,36 @@ export default function Quiz() {
 
             <form onSubmit={handlePasswordSubmit} className="space-y-6">
               <div>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => {
-                    setPassword(e.target.value);
-                    setPasswordError('');
-                  }}
-                  placeholder="Nhập mật khẩu..."
-                  className={`w-full px-6 py-4 text-lg border-2 rounded-xl focus:outline-none transition duration-300 ${
-                    passwordError
-                      ? 'border-red-500 focus:border-red-600 bg-red-50'
-                      : 'border-red-300 focus:border-red-600 focus:bg-red-50'
-                  }`}
-                  autoFocus
-                  onKeyPress={(e) => e.key === 'Enter' && handlePasswordSubmit(e)}
-                />
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      setPasswordError('');
+                    }}
+                    placeholder="Nhập mật khẩu..."
+                    className={`w-full px-6 py-4 pr-16 text-lg border-2 rounded-xl focus:outline-none transition duration-300 ${
+                      passwordError
+                        ? 'border-red-500 focus:border-red-600 bg-red-50'
+                        : 'border-red-300 focus:border-red-600 focus:bg-red-50'
+                    }`}
+                    autoFocus
+                    onKeyPress={(e) => e.key === 'Enter' && handlePasswordSubmit(e)}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-600 hover:text-gray-800 transition duration-200 focus:outline-none"
+                    title={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="w-6 h-6" />
+                    ) : (
+                      <Eye className="w-6 h-6" />
+                    )}
+                  </button>
+                </div>
                 {passwordError && (
                   <p className="text-red-600 text-sm font-semibold mt-2 flex items-center gap-2">
                     ⚠️ {passwordError}
