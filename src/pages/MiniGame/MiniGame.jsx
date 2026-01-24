@@ -8,12 +8,14 @@ import Cell from '../../components/minigame/Cell.jsx';
 import ScoreBoard from '../../components/minigame/ScoreBoard.jsx';
 import QuestionModal from '../../components/minigame/QuestionModal.jsx';
 import BombPopup from '../../components/minigame/BombPopup.jsx';
+import PasswordPage from './PasswordPage.jsx';
 import { Play, Zap } from 'lucide-react';
 
 const TOTAL_TURNS = 10;
 
 function MiniGame() {
   const navigate = useNavigate();
+  const [isPasswordVerified, setIsPasswordVerified] = useState(false);
   const [gameState, setGameState] = useState(null);
   const [currentTurn, setCurrentTurn] = useState(1);
   const [group1Score, setGroup1Score] = useState(0);
@@ -138,6 +140,11 @@ function MiniGame() {
     };
     navigate('/results', { state: finalScore });
   };
+
+  // Nếu chưa xác thực mật khẩu, hiển thị trang mật khẩu
+  if (!isPasswordVerified) {
+    return <PasswordPage onPasswordCorrect={() => setIsPasswordVerified(true)} />;
+  }
 
   if (!gameStarted) {
     return (
