@@ -1,28 +1,138 @@
 import React, { useEffect } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
-import { quizData } from '../data/quizData';
+import { Trophy, ArrowLeft } from 'lucide-react';
 
 export default function Results() {
   const location = useLocation();
   const navigate = useNavigate();
   
-  const resultData = location.state?.result;
-
-  // Lưu trạng thái xác thực user để có thể xem bảng xếp hạng mà không cần nhập lại mật khẩu
-  useEffect(() => {
-    if (resultData) {
-      sessionStorage.setItem('userAuthenticated', 'true');
-      sessionStorage.setItem('leaderboardAuth', 'true');
-    }
-  }, [resultData]);
-
-  if (!resultData) {
-    navigate('/quiz');
-    return null;
+  // Handle both quiz results and minigame results
+  const stateData = location.state;
+  const isMinigame = stateData?.group1Score !== undefined;
+  
+  if (!stateData) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center px-4">
+        <div className="text-center">
+          <h1 className="text-4xl font-bold text-white mb-4">Không có dữ liệu</h1>
+          <Link 
+            to="/minigame"
+            className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition"
+          >
+            <ArrowLeft className="w-5 h-5" />
+            Quay lại Minigame
+          </Link>
+        </div>
+      </div>
+    );
   }
 
-  const { correct, total, timeTaken, answers, username } = resultData;
-  const percentage = Math.round((correct / total) * 100);
+  // Minigame Results
+  if (isMinigame) {
+    const { group1Score, group2Score, winner } = stateData;
+    
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 px-4 py-12">
+        <div className="max-w-4xl mx-auto">
+          {/* Header */}
+          <div className="text-center mb-12">
+            <Trophy className="w-16 h-16 text-yellow-400 mx-auto mb-4 animate-bounce" />
+            <h1 className="text-5xl font-bold text-white mb-2">Kết Quả Trò Chơi</h1>
+            <p className="text-purple-200 text-lg">Minigame - Tư Tưởng Hồ Chí Minh</p>
+          </div>
+
+          {/* Scores Card */}
+          <div className="bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 p-8 mb-8">
+            <div className="grid grid-cols-2 gap-8 mb-8">
+              {/* Nhóm 1 */}
+              <div className={`rounded-xl p-6 text-center transform transition ${
+                winner === 1 ? 'bg-blue-500 scale-105 shadow-lg' : 'bg-blue-500/50'
+              }`}>
+                <h2 className="text-white text-xl font-bold mb-2">Nhóm 1</h2>
+                <div className="text-5xl font-bold text-white mb-2">{group1Score}</div>
+                <p className="text-blue-100">Điểm</p>
+                {winner === 1 && (
+                  <div className="mt-3 inline-block bg-yellow-400 text-blue-900 px-4 py-1 rounded-full font-bold text-sm">
+                    🥇 Chiến Thắng
+                  </div>
+                )}
+              </div>
+
+              {/* Nhóm 2 */}
+              <div className={`rounded-xl p-6 text-center transform transition ${
+                winner === 2 ? 'bg-orange-500 scale-105 shadow-lg' : 'bg-orange-500/50'
+              }`}>
+                <h2 className="text-white text-xl font-bold mb-2">Nhóm 2</h2>
+                <div className="text-5xl font-bold text-white mb-2">{group2Score}</div>
+                <p className="text-orange-100">Điểm</p>
+                {winner === 2 && (
+                  <div className="mt-3 inline-block bg-yellow-400 text-orange-900 px-4 py-1 rounded-full font-bold text-sm">
+                    🥇 Chiến Thắng
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Winner Announcement */}
+            {winner === 1 ? (
+              <div className="bg-blue-500/20 border border-blue-400 rounded-lg p-4 text-center mb-8">
+                <p className="text-white text-lg font-bold">🎉 Nhóm 1 Chiến Thắng! 🎉</p>
+              </div>
+            ) : winner === 2 ? (
+              <div className="bg-orange-500/20 border border-orange-400 rounded-lg p-4 text-center mb-8">
+                <p className="text-white text-lg font-bold">🎉 Nhóm 2 Chiến Thắng! 🎉</p>
+              </div>
+            ) : (
+              <div className="bg-purple-500/20 border border-purple-400 rounded-lg p-4 text-center mb-8">
+                <p className="text-white text-lg font-bold">🤝 Hòa Nhau! 🤝</p>
+              </div>
+            )}
+          </div>
+
+          {/* Score Analysis */}
+          <div className="bg-white/5 backdrop-blur-lg rounded-2xl border border-white/20 p-8 mb-8">
+            <h3 className="text-white text-2xl font-bold mb-6">📊 Phân Tích</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="bg-blue-500/20 rounded-lg p-4">
+                <p className="text-blue-200 text-sm mb-2">Chênh Lệch Điểm</p>
+                <p className="text-white text-3xl font-bold">{Math.abs(group1Score - group2Score)}</p>
+              </div>
+              <div className="bg-green-500/20 rounded-lg p-4">
+                <p className="text-green-200 text-sm mb-2">Tổng Điểm</p>
+                <p className="text-white text-3xl font-bold">{group1Score + group2Score}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link
+              to="/minigame"
+              className="inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg transition-all duration-200 transform hover:scale-105"
+            >
+              🎮 Chơi Lại
+            </Link>
+            <Link
+              to="/"
+              className="inline-flex items-center justify-center gap-2 bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-8 rounded-lg transition-all duration-200 transform hover:scale-105"
+            >
+              🏠 Trang Chủ
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Original Quiz Results (keep existing code)
+  const resultData = stateData; // For quiz results
+  const correct = resultData?.correct || 0;
+  const total = resultData?.total || 0;
+  const username = resultData?.username || 'Người chơi';
+  const timeTaken = resultData?.timeTaken || 0;
+  const answers = resultData?.answers || [];
+  
+  const percentage = Math.round((correct / total) * 100) || 0;
   const minutesTaken = Math.floor(timeTaken / 60);
   const secondsTaken = timeTaken % 60;
 
@@ -122,36 +232,25 @@ export default function Results() {
           <div className="bg-white rounded-2xl shadow-lg p-8">
             <h3 className="text-2xl font-bold text-gray-800 mb-6">📋 Xem lại kết quả</h3>
             <div className="space-y-4 max-h-96 overflow-y-auto">
-              {quizData.questions.map((question, index) => {
-                const isCorrect = answers[index] === question.correct;
-                return (
-                  <div
-                    key={index}
-                    className={`p-5 rounded-xl border-l-4 ${
-                      isCorrect ? 'bg-green-50 border-green-500' : 'bg-red-50 border-red-500'
-                    }`}
-                  >
-                    <div className={`font-bold mb-2 text-lg ${isCorrect ? 'text-green-600' : 'text-red-600'}`}>
-                      {isCorrect ? '✓' : '✗'} Câu {index + 1}
-                    </div>
-                    <div className="text-gray-800 mb-3 font-medium">{question.question}</div>
-                    <div className="text-sm space-y-2">
-                      <div className="text-gray-700">
-                        <span className="font-semibold">Bạn chọn:</span>{' '}
-                        <span className={isCorrect ? 'text-green-700 font-bold' : 'text-red-700 font-bold'}>
-                          {question.options[answers[index]]}
-                        </span>
+              {answers && answers.length > 0 ? (
+                answers.map((answer, index) => {
+                  const isCorrect = answer === index;
+                  return (
+                    <div
+                      key={index}
+                      className={`p-5 rounded-xl border-l-4 ${
+                        isCorrect ? 'bg-green-50 border-green-500' : 'bg-red-50 border-red-500'
+                      }`}
+                    >
+                      <div className={`font-bold mb-2 text-lg ${isCorrect ? 'text-green-600' : 'text-red-600'}`}>
+                        {isCorrect ? '✓' : '✗'} Câu {index + 1}
                       </div>
-                      {!isCorrect && (
-                        <div className="text-green-700">
-                          <span className="font-semibold">Đáp án đúng:</span>{' '}
-                          <span className="font-bold">{question.options[question.correct]}</span>
-                        </div>
-                      )}
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })
+              ) : (
+                <p className="text-gray-600 text-center py-8">Không có dữ liệu để xem lại</p>
+              )}
             </div>
           </div>
         </div>

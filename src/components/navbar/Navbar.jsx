@@ -8,6 +8,7 @@ function Navbar() {
     { title: 'Tư tưởng Hồ Chí Minh', path: '/tu-tuong-hcm' },
     { title: 'Giá trị và Vai trò', path: '/gia-tri-vai-tro' },
     { title: 'Quiz', path: '/quiz' },
+    { title: 'Minigame', path: '/minigame' },
     { title: 'AI Usage', path: '/ai-usage' }
   ];
 

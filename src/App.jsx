@@ -10,6 +10,7 @@ import Success from './pages/Success.jsx'
 import Results from './pages/Results.jsx'
 import Leaderboard from './pages/Leaderboard.jsx'
 import Statistics from './pages/Statistics.jsx'
+import MiniGame from './pages/MiniGame/MiniGame.jsx'
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
             <Route path="/tu-tuong-hcm" element={<Ideal />} />
             <Route path="/gia-tri-vai-tro" element={<Values />} />
             <Route path="/quiz" element={<Quiz />} />
+            <Route path="/minigame" element={<MiniGame />} />
             <Route path="/ai-usage" element={<AIUsage />} />
             <Route path="/success" element={<Success />} />
             <Route path="/results" element={<Results />} />
