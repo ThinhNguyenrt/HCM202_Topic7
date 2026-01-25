@@ -20,16 +20,16 @@ function PasswordPage({ onPasswordCorrect }) {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-600 to-blue-900 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-600 to-violet-900 flex items-center justify-center p-4">
       <div className="bg-white rounded-lg shadow-2xl p-8 max-w-md w-full">
         <div className="flex justify-center mb-6">
-          <div className="bg-blue-100 p-4 rounded-full">
-            <Lock className="text-blue-600" size={32} />
+          <div className="bg-indigo-100 p-4 rounded-full">
+            <Lock className="text-indigo-600" size={32} />
           </div>
         </div>
 
         <h1 className="text-3xl font-bold text-center text-gray-800 mb-2">
-          Trò Chơi Mini
+          Minigame
         </h1>
         <p className="text-center text-gray-600 mb-8">
           Nhập mật khẩu để bắt đầu trò chơi
@@ -47,7 +47,7 @@ function PasswordPage({ onPasswordCorrect }) {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Nhập mật khẩu"
-                className="w-full px-4 py-3 pr-12 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 transition"
+                className="w-full px-4 py-3 pr-12 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 transition"
                 autoFocus
               />
               <button
@@ -68,15 +68,11 @@ function PasswordPage({ onPasswordCorrect }) {
 
           <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition duration-200 transform hover:scale-105"
+            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-lg transition duration-200 transform hover:scale-105"
           >
             Vào Trò Chơi
           </button>
         </form>
-
-        <p className="text-center text-gray-500 text-sm mt-6">
-          © 2024 HCM Project
-        </p>
       </div>
     </div>
   );

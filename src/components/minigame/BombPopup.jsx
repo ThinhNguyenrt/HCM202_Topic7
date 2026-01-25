@@ -6,9 +6,6 @@ import { AlertTriangle } from 'lucide-react';
  * @param {Function} onClose - Close handler
  */
 function BombPopup({ isOpen, onClose }) {
-  // CSS animation is triggered by isOpen state change
-  const shakeClass = isOpen ? 'animate-bounce' : '';
-
   if (!isOpen) return null;
 
   return (
@@ -17,12 +14,7 @@ function BombPopup({ isOpen, onClose }) {
       <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
 
       {/* Modal */}
-      <div
-        className={`
-          relative bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md mx-4
-          ${shakeClass}
-        `}
-      >
+      <div className="relative bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md mx-4">
         {/* Bomb Icon */}
         <div className="text-center mb-6">
           <div className="inline-block text-7xl mb-4 animate-pulse">💣</div>
