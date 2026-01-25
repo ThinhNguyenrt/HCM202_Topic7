@@ -106,7 +106,7 @@ function Home() {
             Đại đoàn kết dân tộc không chỉ là khẩu hiệu, mà là chiến lược sống còn của cách mạng Việt Nam.
           </p>
           <a
-            href="/tu-tuong-hcm"
+            href="dai-doan-ket"
             className="inline-block bg-gradient-to-r from-red-600 to-orange-500 text-white px-10 py-4 rounded-full font-bold text-xl hover:shadow-lg transform hover:scale-105 transition-all duration-300"
           >
             → Khám phá tư tưởng Hồ Chí Minh

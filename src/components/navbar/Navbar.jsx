@@ -5,7 +5,7 @@ function Navbar() {
 
   const navItems = [
     { title: 'Trang chủ', path: '/' },
-    { title: 'Tư tưởng Hồ Chí Minh', path: '/tu-tuong-hcm' },
+    { title: 'Đại đoàn kết', path: '/dai-doan-ket' },
     { title: 'Giá trị và Vai trò', path: '/gia-tri-vai-tro' },
     { title: 'Quiz', path: '/quiz' },
     { title: 'Minigame', path: '/minigame' },

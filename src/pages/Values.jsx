@@ -1,4 +1,6 @@
 import hinh3 from '../assets/image.png';
+import atmgao from '../assets/atmgao.jpg';
+import covid19 from '../assets/covid19.jpg';
 
 export default function Values() {
   return (
@@ -25,7 +27,7 @@ export default function Values() {
           <div className="max-w-5xl mx-auto bg-white rounded-2xl border-2 border-gray-200 p-8 md:p-10 group cursor-pointer hover:border-red-400 transition-all duration-500">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-10 flex items-center gap-3 group cursor-pointer hover:text-red-600 transition-colors">
               <span className="text-4xl group-hover:animate-spin">⚡</span>
-              Đại Đoàn Kết Tạo Nên Sức Mạnh Tổng Hợp Của Dân Tộc
+              Đại đoàn kết tạo nên sức mạnh to lớn cho dân tộc
             </h2>
 
             <div className="space-y-6">
@@ -83,7 +85,7 @@ export default function Values() {
           <div className="max-w-5xl mx-auto bg-white rounded-2xl border-2 border-gray-200 p-8 md:p-10 group cursor-pointer hover:border-red-400 transition-all duration-500">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-10 flex items-center gap-3 group cursor-pointer hover:text-red-600 transition-colors">
               <span className="text-4xl group-hover:rotate-12 transition-transform">📚</span>
-              Thực Tiễn Cách Mạng Việt Nam Chứng Minh Tính Chiến Lược Của Đại Đoàn Kết
+              Thực tiễn cách mạng Việt Nam chứng minh tính chiến lược của đại đoàn kết
             </h2>
 
             <div className="space-y-6">
@@ -133,12 +135,87 @@ export default function Values() {
           </div>
         </section>
 
-        {/* Section 3 - Conclusion */}
+        {/* Section 3 - Liên hệ thực tiễn - COVID-19 */}
         <section className="mb-8 animate-fadeInUp" style={{animationDelay: '0.6s'}}>
+          <div className="max-w-5xl mx-auto bg-white rounded-2xl border-2 border-gray-200 p-8 md:p-10 group cursor-pointer hover:border-red-400 transition-all duration-500">
+            <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-800 mb-12">
+              Liên hệ thực tiễn
+            </h2>
+
+            <div className="space-y-6">
+              {/* Mở đầu */}
+              <div className="bg-gradient-to-r from-red-50 to-orange-50 rounded-xl p-8 border-l-4 border-red-600 hover:shadow-lg transition-all duration-500">
+                <p className="text-lg text-gray-700 leading-relaxed font-semibold">
+                  Sức mạnh đại đoàn kết không chỉ được chứng minh qua những cuộc kháng chiến chống ngoại xâm, mà còn tỏa sáng rực rỡ trong cuộc chiến chống lại "kẻ thù vô hình" – đại dịch COVID-19.
+                </p>
+              </div>
+
+              {/* Mô hình sáng tạo */}
+              <div className="bg-white border-l-4 border-red-600 rounded-lg p-6 shadow-md hover:shadow-xl transition-all duration-300">
+                <h3 className="text-xl font-bold text-red-600 mb-4 flex items-center gap-2">
+                  <span className="text-2xl">💡</span>
+                  Những "Mô Hình Sáng Tạo"
+                </h3>
+                <p className="text-lg text-gray-700 leading-relaxed">
+                  ATM gạo, Siêu thị 0 đồng, hay các chuyến xe hỗ trợ thực phẩm từ các tỉnh thành miền Bắc, miền Trung hướng về tâm dịch miền Nam đã thể hiện đậm nét truyền thống "lá lành đùm lá rách" của dân tộc.
+                </p>
+              </div>
+
+              {/* Lực lượng tuyến đầu */}
+              <div className="bg-white border-l-4 border-orange-500 rounded-lg p-6 shadow-md hover:shadow-xl transition-all duration-300">
+                <h3 className="text-xl font-bold text-orange-600 mb-4 flex items-center gap-2">
+                  <span className="text-2xl">🏥</span>
+                  Lực Lượng Tuyến Đầu Và Sự Hy Sinh
+                </h3>
+                <p className="text-lg text-gray-700 leading-relaxed">
+                  Sự tận hiến của đội ngũ y bác sĩ, chiến sĩ công an, bộ đội cùng các tình nguyện viên đã tạo nên một bức tường thành vững chắc nhờ niềm tin và sự ủng hộ tuyệt đối của cộng đồng.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* IMAGES SECTION - ATM Gạo và COVID-19 */}
+        <section className="mb-12 animate-fadeInUp" style={{animationDelay: '0.7s'}}>
+          <div className="max-w-5xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {/* ATM Gạo */}
+              <div className="bg-white rounded-2xl border-2 border-gray-200 p-6 shadow-lg hover:shadow-2xl hover:border-red-400 transition-all duration-500 group cursor-pointer flex flex-col">
+                <div className="bg-gradient-to-br from-red-100 to-orange-100 rounded-xl p-4 overflow-hidden mb-4 flex-grow flex items-center justify-center" style={{ height: '280px' }}>
+                  <img 
+                    src={atmgao} 
+                    alt="ATM gạo - Biểu tượng đại đoàn kết"
+                    className="h-full w-auto rounded-lg object-contain group-hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
+                <h3 className="text-xl font-bold text-red-600 text-center group-hover:text-orange-600 transition-colors duration-300">
+                  ATM Gạo - Biểu Tượng Đại Đoàn Kết
+                </h3>
+              </div>
+
+              {/* COVID-19 */}
+              <div className="bg-white rounded-2xl border-2 border-gray-200 p-6 shadow-lg hover:shadow-2xl hover:border-red-400 transition-all duration-500 group cursor-pointer flex flex-col">
+                <div className="bg-gradient-to-br from-red-100 to-orange-100 rounded-xl p-4 overflow-hidden mb-4 flex-grow flex items-center justify-center" style={{ height: '280px' }}>
+                  <img 
+                    src={covid19} 
+                    alt="Chống dịch COVID-19 - Sức mạnh đoàn kết"
+                    className="h-full w-auto rounded-lg object-contain group-hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
+                <h3 className="text-xl font-bold text-red-600 text-center group-hover:text-orange-600 transition-colors duration-300">
+                  Chống Dịch COVID-19 - Sức Mạnh Đoàn Kết
+                </h3>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Section 4 - Conclusion */}
+        <section className="mb-8 animate-fadeInUp" style={{animationDelay: '0.8s'}}>
           <div className="max-w-5xl mx-auto bg-white rounded-2xl border-2 border-gray-200 p-10 md:p-12 group cursor-pointer hover:border-red-400 transition-all duration-500">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-8 text-center flex items-center justify-center gap-3">
               <span className="text-5xl group-hover:animate-bounce">🏁</span>
-              Kết Luận
+              Kết luận
             </h2>
 
             <p className="text-xl text-gray-800 mb-8 leading-relaxed text-center font-semibold">

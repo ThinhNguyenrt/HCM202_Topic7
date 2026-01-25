@@ -20,7 +20,7 @@ function App() {
         <main className="flex-grow">
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/tu-tuong-hcm" element={<Ideal />} />
+            <Route path="/dai-doan-ket" element={<Ideal />} />
             <Route path="/gia-tri-vai-tro" element={<Values />} />
             <Route path="/quiz" element={<Quiz />} />
             <Route path="/minigame" element={<MiniGame />} />
