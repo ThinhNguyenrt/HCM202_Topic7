@@ -101,9 +101,9 @@ function MiniGame() {
 
     // Cập nhật điểm (trừ 5)
     if (currentGroup === 1) {
-      setGroup1Score(prev => Math.max(0, prev - 5));
+      setGroup1Score(prev => prev - 5);
     } else {
-      setGroup2Score(prev => Math.max(0, prev - 5));
+      setGroup2Score(prev => prev - 5);
     }
 
     // Đánh dấu ô đã được trả lời
